@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Table SYSTEM "table.dtd">
+<Table nbItems="5" name="tableTest3" nbTuples="8">
+  <ListItems>
+    <Item>Whisky</Item>
+    <Item>Cacahuetes</Item>
+    <Item>Coca</Item>
+    <Item>Lessive</Item>
+    <Item>Assouplissant</Item>
+  </ListItems>
+  <Tuple>
+    <Item>Whisky</Item>
+    <Item>Cacahuetes</Item>
+    <Item>Coca</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Whisky</Item>
+    <Item>Cacahuetes</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Whisky</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Cacahuetes</Item>
+    <Item>Assouplissant</Item>
+    <Item>Lessive</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Lessive</Item>
+    <Item>Assouplissant</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Whisky</Item>
+    <Item>Assouplissant</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Whisky</Item>
+    <Item>Assouplissant</Item>
+  </Tuple>
+  <Tuple>
+    <Item>Lessive</Item>
+    <Item>Assouplissant</Item>
+  </Tuple>
+</Table>

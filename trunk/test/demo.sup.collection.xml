@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE racine SYSTEM "collection.dtd">
+
+<Collection name="demo.table.collection.xml" nbElements="7" tableName="demo.table.xml">
+<Element>
+<Number>1</Number>
+<Set>
+    <Item>a</Item>
+</Set>
+</Element>
+<Element>
+<Number>2</Number>
+<Set>
+    <Item>c</Item>
+</Set>
+</Element>
+<Element>
+<Number>3</Number>
+<Set>
+    <Item>f</Item>
+</Set>
+</Element>
+<Element>
+<Number>4</Number>
+<Set>
+    <Item>a</Item>
+    <Item>b</Item>
+</Set>
+</Element>
+<Element>
+<Number>5</Number>
+<Set>
+    <Item>c</Item>
+    <Item>d</Item>
+</Set>
+</Element>
+<Element>
+<Number>6</Number>
+<Set>
+    <Item>c</Item>
+    <Item>e</Item>
+</Set>
+</Element>
+<Element>
+<Number>7</Number>
+<Set>
+    <Item>f</Item>
+    <Item>g</Item>
+</Set>
+</Element>
+</Collection>

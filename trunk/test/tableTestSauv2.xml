@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE ruletree SYSTEM "table.dtd">
+
+<Table nbItems="5" name="tableTestSauv2.xml" nbTuples="6">
+<ListItems>
+<Item>Assouplissant</Item>
+<Item>Cacahuetes</Item>
+<Item>Coca</Item>
+<Item>Lessive</Item>
+<Item>Whisky</Item>
+</ListItems>
+<Tuple>
+<Item>Whisky</Item>
+<Item>Cacahuetes</Item>
+<Item>Coca</Item>
+</Tuple>
+<Tuple>
+<Item>Whisky</Item>
+<Item>Cacahuetes</Item>
+</Tuple>
+<Tuple>
+<Item>Whisky</Item>
+</Tuple>
+<Tuple>
+<Item>Cacahuetes</Item>
+<Item>Lessive</Item>
+<Item>Assouplissant</Item>
+</Tuple>
+<Tuple>
+<Item>Lessive</Item>
+<Item>Assouplissant</Item>
+</Tuple>
+<Tuple>
+<Item>Whisky</Item>
+<Item>Assouplissant</Item>
+</Tuple>
+</Table>
