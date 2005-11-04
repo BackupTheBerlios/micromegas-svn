@@ -31,7 +31,6 @@
 SetOfElements::SetOfElements()
 {
   collection.clear();
-  nbElements = 0;
   name = "";
   table = "";
 }
@@ -42,7 +41,6 @@ SetOfElements::SetOfElements()
 SetOfElements::SetOfElements(const SetOfElements & init)
 {
   collection = init.collection;
-  nbElements = init.nbElements;
   name = init.name;
   table = init.table;
 }
@@ -54,13 +52,102 @@ SetOfElements::~SetOfElements()
 {
 }
 
+// ==============================================================
+
+void SetOfElements::setSup(const string & fichier) {
+  Table tbl;
+  tbl.setName(fichier);
+	tbl.rewind();
+  
+  for (SetOfInt::iterator it = tbl.getListItems().begin() ;
+      it != tbl.getListItems().end();
+      it++) {
+      SetOfInt s;
+      Element tmpElement(*it,s);
+      add(tmpElement);
+  }
+  closureAll(fichier);
+}
+
+// ==============================================================
+
+void SetOfElements::setInf(const string & fichier) {
+  Table tbl;
+  tbl.setName(fichier);
+	tbl.rewind();
+  SetOfInt item = tbl.getListItems();
+  
+  map<int,SetOfElements> Meet;
+  
+  for (int nbtuples = 0 ; nbtuples < tbl.getNbTuples() ; ++nbtuples) {
+    SetOfInt tuple = tbl.readTuple();
+    for(SetOfInt::iterator xi = item.begin(); xi != item.end(); ++xi) {
+      
+      //cout << *xi << " appartient au tuple ";
+      //tuple.affiche();
+      
+      if (tuple.find(*xi) == tuple.end()) {
+        
+        //cout << "\tNon, SOE concerné : " << endl;
+        
+        //Meet[*xi].affiche();
+        
+        bool ok = true;
+        for(SoE_iterator element = Meet[*xi].begin();
+            element != Meet[*xi].end(); ++element) {
+          
+          //element->affiche();
+          //cout << " inclus dans le tuple ?" << endl;
+              
+          if (tuple.I_includes(element->getItemSet())) {
+            if (element->getItemSet().size() != tuple.size()) {
+              //cout << "\tOui, on supprime l'element ";
+              //element->affiche();
+              Meet[*xi].remove(*element);
+            }
+          }
+          
+          //cout << "le tuple dans l'element ?" << endl;
+          
+          if (element->getItemSet().I_includes(tuple)) {
+            //cout << "\tOui." << endl;
+            ok = false;
+            break;
+          }
+        }
+        //cout << "On insere le tuple ?" << endl;
+        if (ok) {
+          //cout << "\tOui." << endl;
+          Element ins(Meet[*xi].getSize(),tuple);
+          Meet[*xi].add(ins);
+        }
+      }
+    }
+  }
+
+  // Les fonctions d'unions existantes ne fonctionnent pas. J'en crée une nouvelle.
+  clear();
+  set<SetOfInt> cont;
+  for(SetOfInt::iterator xi = item.begin();
+      xi != item.end(); ++xi) {
+    for(SoE_iterator el = Meet[*xi].begin(); el != Meet[*xi].end(); ++el) {
+      cont.insert(el->getItemSet());
+    }
+  }
+  int nb = 0;
+  for(set<SetOfInt>::iterator it = cont.begin(); it != cont.end(); ++it) {
+    Element tmp(nb++,*it);
+    //tmp.affiche();
+    add(tmp);
+  }
+  
+}
 
 // ==============================================================
 
 void SetOfElements::clear()
 {
   collection.clear();
-  nbElements = 0;
 }
 
 
@@ -77,7 +164,6 @@ SetOfElements& SetOfElements::operator=(const SetOfElements & init)
     this -> add(*itSet);
   }
 
-  nbElements = tmp.nbElements;
   name = tmp.name;
   table = tmp.table;
 
@@ -147,20 +233,11 @@ set<Element> SetOfElements::getCollection() const
   return (collection);
 }
 
-
-// ==============================================================
-
-void SetOfElements::setNbElements(int init)
-{
-  nbElements = init;
-}
-
-
 // ==============================================================
 
 int SetOfElements::getNbElements() const
 {
-  return (nbElements);
+  return collection.size();
 }
 
 
@@ -300,12 +377,6 @@ void SetOfElements::SoETraiteDebut(int & etat, xmlTextReaderPtr & reader, bool &
     xmlChar * attrNbElements = xmlCharStrdup("nbElements");
     xmlChar * tmpNbElements = NULL;
     tmpNbElements = xmlTextReaderGetAttribute(reader, attrNbElements);
-
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //!!!!!!!!!!!!!!!!!!!ERREUR !!!!!!!!!!!!!!!!!!!!
-    //nbElements = (atoi)((char *)(tmpNbElements));
-    
-    nbElements=0;
     
     // le nom du fichier XML_TABLE correspondant
     xmlChar * attrTable = xmlCharStrdup("tableName");
@@ -487,7 +558,7 @@ void SetOfElements::save()
       fic << "<!DOCTYPE racine SYSTEM \"collection.dtd\">" << endl;
       fic << endl;
 
-      fic << "<" << baliseCollection << " name=\"" << name << "\" nbElements=\"" << nbElements << "\" tableName=\"" << table << "\">" << endl;
+      fic << "<" << baliseCollection << " name=\"" << name << "\" nbElements=\"" << getNbElements() << "\" tableName=\"" << table << "\">" << endl;
    
       // Ecriture de chaque element
       SoE_iterator itSoE;
@@ -545,11 +616,11 @@ void SetOfElements::save()
 
 void SetOfElements::add(Element eltToAdd)
 {
+  
+  //printf("Insertion de   ");
+  //eltToAdd.affiche();
   // on doit inserer l'element dans la collection
   collection.insert(eltToAdd);
-
-  // et incrementer le nombre d'elements
-  nbElements++;
 }
 
 
@@ -562,9 +633,6 @@ void SetOfElements::remove(Element eltToRemove)
   {
     // on doit supprimer l'element de la collection
     collection.erase(eltToRemove);
-
-    // et decrementer le compteur
-    nbElements--;
   }
 }
 
@@ -663,7 +731,7 @@ int SetOfElements::getSize()
 
 // ==============================================================
 
- void SetOfElements::closureAll(char * nameTable)
+ void SetOfElements::closureAll(string nameTable)
 {
   Table tmpTable;
   tmpTable.setName(nameTable);
@@ -736,7 +804,7 @@ int SetOfElements::getSize()
 
 void SetOfElements::affiche()
 {
-  cout << "nombre d'elements : " << nbElements << endl;
+  cout << "nombre d'elements : " << getNbElements() << endl;
 
   if (name != "")
     cout << "nom du fichier XML_COLLECTION : " << name << endl;

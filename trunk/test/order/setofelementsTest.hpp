@@ -26,6 +26,8 @@ class SetOfElementstest : public CppUnit::TestFixture
   CPPUNIT_TEST(test_SoE_minus2);
   CPPUNIT_TEST(test_SoE_minus3);
   CPPUNIT_TEST(test_SoE_minus4);
+  CPPUNIT_TEST(test_setSup);
+  CPPUNIT_TEST(test_setInf);
   CPPUNIT_TEST_SUITE_END();
 
 
@@ -55,6 +57,8 @@ public:
   void test_SoE_minus2();
   void test_SoE_minus3();
   void test_SoE_minus4();
+  void test_setSup();
+  void test_setInf();
   int generator_collec(string nom_table);
   int generator_collec2(string nom_table);
   void generator_closure(string nom_table);

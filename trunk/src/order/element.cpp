@@ -14,7 +14,14 @@
 Element::Element()
 {
   number = 0;
-  SetOfInt itemSet;
+  //SetOfInt itemSet;
+}
+
+// ==============================================================
+
+Element::Element(int nb, SetOfInt is) {
+  number = nb;
+  itemSet = is;
 }
 
 

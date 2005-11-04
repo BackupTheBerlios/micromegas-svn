@@ -467,4 +467,22 @@ void SetOfElementstest::generator_closure(string nom_table)
   //fix_table->close();
 }
 
+//==========================================================
+
+void SetOfElementstest::test_setSup() {
+  fixture1->setSup("demo.table.xml");
+  printf("\n\n\n");
+  fixture1->affiche();
+  printf("\n\n\n");
+  fflush(NULL);
+}
+
+void SetOfElementstest::test_setInf() {
+  fixture1->setInf("demo.table.xml");
+  printf("\n\n\n");
+  fixture1->affiche();
+  printf("\n\n\n");
+  fflush(NULL);
+}
+
 

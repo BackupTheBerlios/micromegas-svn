@@ -187,7 +187,7 @@ SetOfInt RuleTree::getChildren(Node N)
 
 // ==============================================================
 
-void RuleTree::setName(char * init)
+void RuleTree::setName(string init)
 {
 	name = init;
 }
@@ -195,7 +195,7 @@ void RuleTree::setName(char * init)
 
 // ==============================================================
 
-char * RuleTree::getName() const
+string RuleTree::getName() const
 {
 	return (name);
 }
@@ -203,7 +203,7 @@ char * RuleTree::getName() const
 
 // ==============================================================
 
-void RuleTree::setTable(char * init)
+void RuleTree::setTable(string init)
 {
 	table = init;
 }
@@ -211,7 +211,7 @@ void RuleTree::setTable(char * init)
 
 // ==============================================================
 
-char * RuleTree::getTable() const
+string RuleTree::getTable() const
 {
 	return (table);
 }
@@ -758,10 +758,8 @@ void RuleTree::ATraiteRSItem(int & etat, xmlTextReaderPtr & reader, int & niveau
 
 bool RuleTree::load()
 {
-	char * filename = getName();
-	
 	ifstream fic;
-	fic.open(filename);
+	fic.open(getName().c_str());
 
 	if (fic != NULL)
 	{
@@ -769,7 +767,7 @@ bool RuleTree::load()
 		Table tmpTable;
 
 		xmlTextReaderPtr reader = NULL;
-		reader = xmlNewTextReaderFilename(filename);
+		reader = xmlNewTextReaderFilename(getName().c_str());
 
 		Element tmpElement;
 
@@ -874,18 +872,17 @@ void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 
 // --------------------------------------------------------------
 
-void RuleTree::save(char * filename)
+void RuleTree::save(string filename)
 {
 	if (filename != "")
 	{
 		ofstream fic;
-		fic.open(filename);
+		fic.open(filename.c_str());
 		if (fic != NULL)
 		{
 			// on a besoin de la table associée
 			Table tmpTable;
-			char * tmpName = getTable();
-			tmpTable.setName(tmpName);
+			tmpTable.setName(getTable());
 			tmpTable.rewind();
 			
 			// en tete du fichier
@@ -893,7 +890,7 @@ void RuleTree::save(char * filename)
 			fic << "<!DOCTYPE RuleTree SYSTEM \"ruletree.dtd\">" << endl;
 			fic << endl;
 			
- 			fic << "<" << baliseRuleTree << " table=\"" << tmpName << "\" supOrder =\"" << orderSup.getName() << "\" infOrder=\"" << orderInf.getName() << "\">" << endl;
+ 			fic << "<" << baliseRuleTree << " table=\"" << getTable() << "\" supOrder =\"" << orderSup.getName() << "\" infOrder=\"" << orderInf.getName() << "\">" << endl;
 			
 			// pour chaque noeud racine (cad noeud n'ayant pas de pere)
 			Node tmp;
@@ -920,15 +917,15 @@ void RuleTree::save(char * filename)
 
 // ===========================================================
 
-Node RuleTree::charToNode(char * regle)
+Node RuleTree::charToNode(string regle)
 {
 	Table tmpTable;
 	tmpTable.setName(table);
 	tmpTable.rewind();
 		
-	char * item;
-	int taille = strlen(regle);
-	int cpt = 0;
+	string item = "";
+	int taille = regle.size();
+	//int cpt = 0;
 	int numItem = -1;
 	SetOfInt tmp;
 	int i = 0;
@@ -937,8 +934,7 @@ Node RuleTree::charToNode(char * regle)
 	{
 		if ((regle[i] != nameItem) && (regle[i] != implique))
 		{
-			item[cpt] = regle[i];
-			cpt++;
+			item += regle[i];
 		}
 		else
 		{
@@ -946,16 +942,16 @@ Node RuleTree::charToNode(char * regle)
 			{
 				numItem = tmpTable.getItemByName(item);
 				tmp.insert(numItem);
-				item[0] = '\0';
-				cpt = 0;
+				item = "";
+				//cpt = 0;
 				numItem = -1;
 			}
 			if (regle[i] == implique)
 			{
 				numItem = tmpTable.getItemByName(item);
 				tmp.insert(numItem);
-				item[0] = '\0';
-				cpt = 0;
+				item = "";
+				//cpt = 0;
 				numItem = -1;
 			}
 		}

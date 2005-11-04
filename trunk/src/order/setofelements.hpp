@@ -19,6 +19,7 @@
 
 #include <map>
 #include <algorithm>
+#include <map>
 
 #include "table.hpp"
 #include "element.hpp"
@@ -37,9 +38,6 @@ class SetOfElements
     /** un ensemble d'elements */
     set<Element> collection;
 
-    /** le nombre d'elements dans l'ensemble */
-    int nbElements;
-
     /** le nom du fichier XML contenant la collection */
     string name;
 
@@ -57,6 +55,21 @@ class SetOfElements
       */
     SetOfElements(const SetOfElements &);
 
+    /**
+      * Calcule l'ensemble des Sup-irreductibles
+      * Attention, ils sont calculés à l'aide de la
+      * table, et ne sont donc pas nécessairement les
+      * mêmes que ceux voulus.
+      * @param Le nom de la table
+      */
+    void setSup(const string &);
+  
+    /**
+      * Calcule l'ensemble des Inf-irreductibles
+      * @param Le nom de la table
+      */
+    void setInf(const string &);
+  
     /**
       * Destructeur
       */
@@ -92,12 +105,6 @@ class SetOfElements
       * Fonction qui recupere la collection
       */
     set<Element> getCollection() const;
-
-    /**
-      * Fonction qui initialise l'attibut nbElements
-      * @param le nombre d'elements dans la collection
-      */
-    void setNbElements(int);
 
     /**
       * Fonction qui recupere le nombre d'elements de la collection
@@ -207,7 +214,7 @@ class SetOfElements
       * Fonction qui calcule la fermeture de tous les itemsets des elements
       * @param le nom de la table correspondante
       */
-    void closureAll(char *);
+    void closureAll(string);
 
     /**
       * Definition d'un iterateur sur le TDA SetOfElements

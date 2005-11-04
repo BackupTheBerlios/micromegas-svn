@@ -46,10 +46,10 @@ class RuleTree
 		map<int, SetOfInt> children;
 		
 		/** nom du fichier XML */
-		char * name;
+		string name;
 
 		/** nom de la table XML associee */
-		char * table;
+		string table;
 
 		/** l'ordre des sup-irreductibles */
 		Order orderSup;
@@ -136,23 +136,23 @@ class RuleTree
 		  * Fonction qui initialise l'attribut name
 		  * @param le nom du fichier XML contenant l'arborescence
 		  */
-		void setName(char *);
+		void setName(string);
 		
 		/**
 		  * Fonction qui recupere le nom du fichier correspondant
 		  */
-		char * getName() const;
+		string getName() const;
 
 		/**
 		  * Fonction qui initialise l'attribut table
 		  * @param le nom du fichier XML contenant la table correspondante
 		  */
-		void setTable(char *);
+		void setTable(string);
 		
 		/**
 		  * Fonction qui recupere le nom de la table correspondante
 		  */
-		char * getTable() const;
+		string getTable() const;
 
 		/**
 		  * Fonction qui initialise l'attribut orderSup
@@ -261,14 +261,14 @@ class RuleTree
 		  * @param le nom du fichier XML
 		  */
 		void saveRule(ofstream &, int, Table);
-		void save(char *);
+		void save(string);
 		
 		/**
 		  * Fonction qui transforme une regle sous forme de chaine de caracteres en Node
 		  * @param la regle
 		  * @param la table associee a cette arborescence
 		  */
-		Node charToNode(char *);
+		Node charToNode(string);
 
 		/**
 		  * Fonction qui ajoute un fils �un noeud de l'arborescence

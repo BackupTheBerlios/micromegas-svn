@@ -62,6 +62,9 @@ void Order::setJ(SetOfElements init)
   set<Element>::iterator itSet;
   set<Element> tmpCollection;
 
+  name = init.getName();
+  table = init.getTable();
+  
   // pour chaque element de ce SetOfElements
   tmpCollection = init.getCollection();
   for (itSet = tmpCollection.begin() ; itSet != tmpCollection.end() ; itSet++)
@@ -144,7 +147,7 @@ SetOfElements Order::getImSucc(Element tmp)
 
 void Order::setName(string init)
 {
-  this -> name = init;
+  name = init;
 }
 
 
@@ -160,7 +163,7 @@ string Order::getName()
 
 void Order::setTable(string init)
 {
-  this -> table = init;
+  table = init;
 }
 
 
@@ -483,11 +486,11 @@ Order Order::duplicate()
 {
   Order tmpOrder;
 
-  tmpOrder.J = this -> J;
-  tmpOrder.imPred = this -> imPred;
-  tmpOrder.imSucc = this -> imSucc;
-  tmpOrder.name = this -> name;
-  tmpOrder.table = this -> table;
+  tmpOrder.J = J;
+  tmpOrder.imPred = imPred;
+  tmpOrder.imSucc = imSucc;
+  tmpOrder.name = name;
+  tmpOrder.table = table;
 
   return (tmpOrder);
 }
@@ -719,4 +722,28 @@ void Order::affiche()
   cout << endl;
     }
     cout << "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + " << endl;
+}
+
+// ==============================================================
+
+void Order::genGraph(string filename) {
+  Table tbl;
+  tbl.setName(table);
+	tbl.rewind();
+  
+  FILE *fp = fopen(filename.c_str(),"wb");
+  fprintf(fp,"graph G {\nrankdir=BT;\nnode [color=cyan, style=filled];\nnodesep=0.80;\n");
+
+  for(map<int, SetOfElements>::iterator itMap = imSucc.begin() ; itMap != imSucc.end() ; itMap++) {
+    
+    fprintf(fp,"\"%s\" -- {",tbl.getNameOfSetOfInt(getJ().getSetByNumber(itMap->first)).c_str());
+    set<Element> tmpSet = (itMap -> second).getCollection();
+    for (set<Element>::iterator itSet = tmpSet.begin() ; itSet != tmpSet.end() ; itSet++) {
+      fprintf(fp,"\"%s\"; ",tbl.getNameOfSetOfInt(itSet->getItemSet()).c_str());
+    }
+    fprintf(fp,"}\n");
+  }
+
+  fprintf(fp,"}");
+  fclose(fp);
 }

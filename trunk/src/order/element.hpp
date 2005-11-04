@@ -42,6 +42,11 @@ class Element
     Element();
 
     /**
+      * Constructeur paramétré
+      */
+    Element(int, SetOfInt);
+  
+    /**
       * Constructeur de recopie
       */
     Element(const Element &);

@@ -224,6 +224,12 @@ class Table
     string getNameOfItem(int);
 
     /**
+      * Fonction qui recupere le nom complet du set
+      * @param Ensemble de numéros d'items
+      */
+    string getNameOfSetOfInt(SetOfInt);
+
+    /**
       * Fonction d'affichage pour verifier les test
       */
     void affiche();

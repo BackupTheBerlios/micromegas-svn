@@ -14,24 +14,6 @@
 #include "../ruletree/ruletree.hpp"
 
 // ===========================================================
-// Calcule l'ordre des inf-irreductibles a partir de la table
-// dont le nom de fichier est passe en parametre
-// Retourne l'ordre ainsi créé
-// ===========================================================
-
-Order ordreInf(char *);
-
-
-// ===========================================================
-// Calcule l'ordre des sup-irreductibles a partir de la table
-// dont le nom de fichier est passe en parametre
-// Retourne l'ordre ainsi créé
-// ===========================================================
-
-Order ordreSup(char *);
-
-
-// ===========================================================
 // Cas d'utilisation = Initialisation de l'arborescence
 // => Creation de la premiere arborescence de regles
 // 
@@ -44,17 +26,17 @@ Order ordreSup(char *);
 // en parametre = le nom du fichier XML contenant la table
 // ===========================================================
 
-void initArbo(char *);
+void initArbo(string);
 
 
 // ===========================================================
 
-void specialiser(char *);
+void specialiser(string);
 
 
 // ===========================================================
 
-void sauter(char *);
+void sauter(string);
 
 
 // ===========================================================

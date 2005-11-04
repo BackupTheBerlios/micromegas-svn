@@ -644,6 +644,16 @@ string Table::getNameOfItem(int itemNumber)
   return ("");
 }
 
+// ==============================================================
+
+string Table::getNameOfSetOfInt(SetOfInt soi) {
+  string out = "";
+  for(SetOfInt::iterator it = soi.begin(); it != soi.end(); ++it) {
+    out += getNameOfItem(*it);
+  }
+  return out;
+}
+
 
 // ==============================================================
 

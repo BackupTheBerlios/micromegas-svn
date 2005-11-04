@@ -38,7 +38,7 @@ void OrderTest::testPred()
   
   
   fixture1->load();
-  fixture1->affiche();
+  //fixture1->affiche();
   
   
   SetOfInt tmpItem;

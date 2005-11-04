@@ -196,6 +196,14 @@ class Order
       * Fonction d'affichage d'un objet de type Order
       */
     void affiche();
+    
+    /**
+      * Fonction de développement
+      * Genère un fichier graphviz representant l'ordre
+      * @param nom du fichier généré
+      * Tranformation en png : dot fichier_généré -Tpng -o image.png
+      */
+    void genGraph(string);
 };
 
 
