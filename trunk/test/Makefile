@@ -1,6 +1,17 @@
-MODULES = order/setofint.o order/setofintTest.o order/table.o order/tableTest.o order/element.o order/elementTest.o order/setofelements.o order/setofelementsTest.o order/order.o order/orderTest.o \
-ruletree/node.o ruletree/setofnodes.o ruletree/ruletree.o \
-navigation/navigation.o
+MODULES = order/setofint.o \
+          order/setofintTest.o \
+	  order/table.o \
+	  order/tableTest.o \
+	  order/element.o \
+	  order/elementTest.o \
+	  order/setofelements.o \
+	  order/setofelementsTest.o \
+	  order/order.o \
+	  order/orderTest.o \
+	  ruletree/node.o \
+	  ruletree/setofnodes.o \
+	  ruletree/ruletree.o \
+	  navigation/navigation.o
 
 #	order/element.o \
 #	order/table.o \
@@ -11,14 +22,16 @@ navigation/navigation.o
 #order/elementTest.o
 #order/tableTest.o
 #order/itemsetTest.o
-FLAGS = -Wall -lcppunit -g -O2 -lxml2
+
+CXX=g++
+FLAGS = -Wall -lcppunit -ldl -g -O2 -lxml2
 
 all : clean mods test_exe
 
 mods:
-	make -C order
-	make -C ruletree
-	make -C navigation
+	make -C order CXX=$(CXX)
+	make -C ruletree CXX=$(CXX)
+	make -C navigation CXX=$(CXX)
 
 clean:
 	make -C order clean
@@ -27,4 +40,4 @@ clean:
 	rm -f test_exe
 
 test_exe: $(MODULES)
-	g++ $(FLAGS) $^ main.cpp -o test_exe
+	$(CXX) $(FLAGS) $^ main.cpp -o test_exe
