@@ -880,14 +880,15 @@ void RuleTree::save(string filename)
 		fic.open(filename.c_str());
 		if (fic != NULL)
 		{
-			// on a besoin de la table associée
+			// on a besoin de la table associee
 			Table tmpTable;
 			tmpTable.setName(getTable());
 			tmpTable.rewind();
 			
 			// en tete du fichier
 			fic << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << endl;
-			fic << "<!DOCTYPE RuleTree SYSTEM \"ruletree.dtd\">" << endl;
+            //FFBB : la DTD est bugee et, en plus, Microwebas ne peut pas la trouver
+			//fic << "<!DOCTYPE RuleTree SYSTEM \"ruletree.dtd\">" << endl;
 			fic << endl;
 			
  			fic << "<" << baliseRuleTree << " table=\"" << getTable() << "\" supOrder =\"" << orderSup.getName() << "\" infOrder=\"" << orderInf.getName() << "\">" << endl;

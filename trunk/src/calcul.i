@@ -8,6 +8,6 @@
 #include "navigation/navigation.hpp"
 %}
  
-void initArbo(string filename);
-void specialiser(string filename);
-void sauter(string filename);
+void initArbo(char* filename);
+void specialiser(char* filename);
+void sauter(char* filename);

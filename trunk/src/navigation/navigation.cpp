@@ -1,9 +1,9 @@
 /********************************************************/
-/* Application : Fouille de donnees			*/
-/* Nom du fichier : navigation.cpp			*/
-/* Derniere mise a jour : 23/07/2004			*/
-/* Auteur : Noyer Caroline				*/
-/********************************************************/ 
+/* Application : Fouille de donnees                     */
+/* Nom du fichier : navigation.cpp                      */
+/* Derniere mise a jour : 23/07/2004                    */
+/* Auteur : Noyer Caroline                              */
+/********************************************************/
 
 
 #include "navigation.hpp"
@@ -11,8 +11,8 @@
 // ===========================================================
 // Cas d'utilisation = Initialisation de l'arborescence
 // => Creation de la premiere arborescence de regles
-// 
-// La table correspondante doit être disponible
+//
+// La table correspondante doit etre disponible
 //
 // - Calcule l'ordre des sup, l'ordre des inf, les regles triviales
 // et les regles generales
@@ -20,7 +20,6 @@
 //
 // en parametre = le nom du fichier XML contenant la table
 // ===========================================================
-
 void initArbo(string filename)
 {
 	string name = filename.substr(0,filename.find_first_of("."));
@@ -48,21 +47,21 @@ void initArbo(string filename)
 	ordInf.setJ(soeInf);
 	ordInf.save();
 	ordInf.genGraph(name + ".inf.dot");
-	
+
 	/// Initialisation de l'arborescence
-		
+
 	RuleTree tmpRuleTree;
 	tmpRuleTree.clear();
 	Node noeudNull;
 	noeudNull.clear();
 	bool boolTrue = true;
 	bool boolFalse = false;
-	
+
 	tmpRuleTree.setName(name + ".arbo.xml");
 	tmpRuleTree.setTable(filename);
-	
+
 	tmpRuleTree.setOrderSup(ordSup);
-	
+
 	// regles triviales
 	// ---------------------------------------------------------
 	set<Element> tmpColl, tmpImPred;
@@ -72,7 +71,7 @@ void initArbo(string filename)
 	int numero;
 	tmpColl.clear();
 	tmpColl = (ordSup.getJ()).getCollection();
-	
+
 	for (itColl = tmpColl.begin() ; itColl != tmpColl.end() ; itColl++)
 	{
 		tmpImPred.clear();
@@ -93,21 +92,21 @@ void initArbo(string filename)
 			currentNode.setProcessed(boolTrue);
 			tmpRuleTree.updateNode(currentNode);
 			tmpRuleTree.setNodeItem(currentNode, itImPred -> getNumber());
-			
+
 		}
 	}
-	
+
 	// regles generales
 	Table tmpTable;
 	tmpTable.clear();
 	tmpTable.setName(filename);
 	tmpTable.rewind();
-	
+
 	SetOfInt tmpListItems;
 	tmpListItems.clear();
 	tmpListItems = tmpTable.getListItems();
 	tmpRuleTree.setListItems(tmpListItems);
-	
+
 	Order copieOrdre;
 	SetOfInt tmpSetOfInt;
 	set<Element> tmpSetOfElements;
@@ -127,7 +126,7 @@ void initArbo(string filename)
 		currentNode.clear();
 		currentNode = tmpRuleTree.getNodeByNumber(numero);
 		tmpRuleTree.setNodeItem(currentNode, itColl -> getNumber());
-		
+
 		// insertion des fils
 		tmpSetOfInt.clear();
 		tmpSetOfElements.clear();
@@ -144,7 +143,7 @@ void initArbo(string filename)
 			tmpRuleTree.insert(itSetOfElements -> getItemSet(), tmpParent);
 		}
 	}
-	
+
 	// on doit maintenant mettre l'ensemble des fermes de chaque noeud a jour
 	// lecture du fichier contenant la table
 	int nbTuples = 0;
@@ -152,7 +151,7 @@ void initArbo(string filename)
 	SetOfNodes tmpListNodes;
 	tmpListNodes.clear();
 	tmpListNodes = tmpRuleTree.getListNodes();
-	
+
 	nbTuples = tmpTable.getNbTuples();
 	for (int i = 0 ; i < nbTuples ; i++)
 	{
@@ -160,7 +159,7 @@ void initArbo(string filename)
 		tmpTuple = tmpTable.readTuple();
 		tmpListNodes.updateClosureAll(tmpTuple);
 	}
-	
+
 	//tmpTable.close();
 
 	// on supprime ceux qui sont des fermes
@@ -178,7 +177,7 @@ void initArbo(string filename)
 			}
 		}
 	}
-	
+
 	// Traitement pour les regles generales uniquement
 	set<int> tmpChildren;
 	set<int>::iterator itChild;
@@ -205,25 +204,39 @@ void initArbo(string filename)
 		}
 		itListNodes -> setProcessed(vrai);
 	}
-	
+
 	tmpListNodes.setCollection(tmpCollListNodes);
 	tmpRuleTree.setListNodes(tmpListNodes);
-	
-	tmpRuleTree.save(name + ".arbo.xml");	
+
+	tmpRuleTree.save(name + ".arbo.xml");
 }
 
 
 // ===========================================================
-
-void specialiser(string filename)
-{}
-
-
-// ===========================================================
-
-void sauter(string filename)
-{}
+void specialiser(string filename) {
+}
 
 
 // ===========================================================
+void sauter(string filename) {
+}
 
+
+
+// ===========================================================
+// Wrapper des fonctions precedantes avec des parametres
+// compatible RPC
+void initArbo(char* filename) {
+    string name(filename);
+    initArbo(name);
+}
+
+void specialiser(char* filename) {
+    string name(filename);
+    specialiser(name);
+}
+
+void sauter(char* filename) {
+    string name(filename);
+    sauter(name);
+}
