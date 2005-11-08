@@ -89,7 +89,6 @@ void SetOfElements::setInf(const string & fichier) {
       if (tuple.find(*xi) == tuple.end()) {
         
         //cout << "\tNon, SOE concerné : " << endl;
-        
         //Meet[*xi].affiche();
         
         bool ok = true;
@@ -118,7 +117,7 @@ void SetOfElements::setInf(const string & fichier) {
         //cout << "On insere le tuple ?" << endl;
         if (ok) {
           //cout << "\tOui." << endl;
-          Element ins(Meet[*xi].getSize(),tuple);
+          Element ins(Meet[*xi].getNextAvailableNumber(),tuple);
           Meet[*xi].add(ins);
         }
       }
@@ -130,6 +129,9 @@ void SetOfElements::setInf(const string & fichier) {
   set<SetOfInt> cont;
   for(SetOfInt::iterator xi = item.begin();
       xi != item.end(); ++xi) {
+      //cout << " -----------------------" << endl;
+      //Meet[*xi].affiche();
+      //cout << " -----------------------" << endl;
     for(SoE_iterator el = Meet[*xi].begin(); el != Meet[*xi].end(); ++el) {
       cont.insert(el->getItemSet());
     }
@@ -717,6 +719,15 @@ SetOfInt SetOfElements::getNumbers()
   
   // on retourne cet SetOfInt
   return (tmp);
+}
+
+// ==============================================================
+
+int SetOfElements::getNextAvailableNumber() {
+  if (getSize())
+    return (getCollection().rbegin())->getNumber() + 1;
+  else
+    return 0;
 }
 
 

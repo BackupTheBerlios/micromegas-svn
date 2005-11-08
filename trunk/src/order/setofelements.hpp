@@ -204,6 +204,11 @@ class SetOfElements
       * Fonction qui renvoie un ensemble d'entiers correspondant a la liste des number des elements
       */
     SetOfInt getNumbers();
+    
+    /** 
+      * Cette fonction renvoie le prochain numéro d'élément non encore utilisé dans ce SetOfElements
+      */
+    int getNextAvailableNumber();
 
     /**
       * Fonction qui retourne le nombre d'elements de l'ensemble
