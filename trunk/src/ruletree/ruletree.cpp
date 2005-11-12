@@ -372,7 +372,7 @@ SetOfElements RuleTree::itemsetToSetOfElements(SetOfInt I)
 	// pour chaque element de I
 	for (it = tmp.begin() ; it != tmp.end() ; it++)
 	{
-		// on rÃ©cupere l'itemset correspondant au numero du noeud
+		// on récupere l'itemset correspondant au numero du noeud
 		// et on forme un element
 		tmpElement.clear();
 		tmpElement.setNumber(*it);
@@ -397,7 +397,7 @@ SetOfNodes RuleTree::itemsetToSetOfNodes(SetOfInt I)
 	// pour chaque element de I
 	for (it = tmp.begin() ; it != tmp.end() ; it++)
 	{
-		// on rÃ©cupÃ¨re le noeud correspondant a ce numero
+		// on récupère le noeud correspondant a ce numero
 		tmpNode.clear();
 		tmpNode = listNodes.getNodeByNumber(*it);
 		// et on l'insere dans le SetOfNodes
@@ -465,26 +465,26 @@ void RuleTree::ATraiteRuleTree(int & etat, xmlTextReaderPtr & reader, int & nive
 		int numero = getLastNumber();
 		
 		// initialisation d'un objet de type Node
-		tmpNode.setNumber(numero);
+		//tmpNode.setNumber(numero);
 		numero++;
 		setLastNumber(numero);
 	
-		// on rÃ©cupÃ¨re les attributs de <Rule ...>
-		// support de la rÃ¨gle
+		// on récupère les attributs de <Rule ...>
+		// support de la règle
 		xmlChar * attrSupport = xmlCharStrdup("support");
 		char * tmpSupport = "";
 		tmpSupport = (char *)(xmlTextReaderGetAttribute(reader, attrSupport));
 		tmpInt = atoi(tmpSupport);
 		tmpNode.setSupport(tmpInt);
 		
-		// confiance de la rÃ¨gle
+		// confiance de la règle
 		xmlChar * attrConfidence = xmlCharStrdup("confidence");
 		char * tmpConfidence = "";
 		tmpConfidence = (char *)(xmlTextReaderGetAttribute(reader, attrConfidence));
 		tmpFloat = (float)(atoi(tmpConfidence));
 		tmpNode.setConfidence(tmpFloat);
 		
-		// specialisation de la rÃ¨gle
+		// specialisation de la règle
 		xmlChar * attrSpecializable = xmlCharStrdup("specializable");
 		char * tmpSpecializable = "";
 		tmpSpecializable = (char *)(xmlTextReaderGetAttribute(reader, attrSpecializable));
@@ -492,7 +492,7 @@ void RuleTree::ATraiteRuleTree(int & etat, xmlTextReaderPtr & reader, int & nive
 			tmpBool = true;
 		else 
 			// sinon dans tous les cas c'est faux 
-			// (par dÃ©faut on considÃ¨rera qu'une rÃ¨gle n'est pas spÃ©cialisable)
+			// (par défaut on considèrera qu'une règle n'est pas spécialisable)
 			tmpBool = false;
 		tmpNode.setSpecializable(tmpBool);
 		
@@ -504,11 +504,18 @@ void RuleTree::ATraiteRuleTree(int & etat, xmlTextReaderPtr & reader, int & nive
 			tmpBool = true;
 		else
 			// sinon dans tous les cas c'est faux
-			// (par dÃ©faut on considÃ¨rera qu'un noeud n'est pas traitÃ©)
+			// (par défaut on considèrera qu'un noeud n'est pas traité)
 			tmpBool = false;
 		tmpNode.setProcessed(tmpBool);
 		
-		// on empile le noeud ainsi initialisÃ©
+		// numero de la règle
+		xmlChar * attrNumber = xmlCharStrdup("number");
+		char * tmpNumber = "";
+		tmpNumber = (char *)(xmlTextReaderGetAttribute(reader, attrNumber));
+		tmpInt = atoi(tmpNumber);
+		tmpNode.setNumber(tmpInt);
+		
+		// on empile le noeud ainsi initialisé
 		pile.push(tmpNode);
 		
 		// initialisation du niveau
@@ -563,22 +570,22 @@ void RuleTree::ATraiteRule(int & etat, xmlTextReaderPtr & reader, int & niveau, 
 		// initialisation d'un objet de type Node
 		tmpNode.setNumber(numero);
 			
-		// on rÃ©cupÃ¨re les attributs de <Rule ...>
-		// support de la rÃ¨gle
+		// on récupère les attributs de <Rule ...>
+		// support de la règle
 		xmlChar * attrSupport = xmlCharStrdup("support");
 		char * tmpSupport = "";
 		tmpSupport = (char *)(xmlTextReaderGetAttribute(reader, attrSupport));
 		tmpInt = atoi(tmpSupport);
 		tmpNode.setSupport(tmpInt);
 		
-		// confiance de la rÃ¨gle
+		// confiance de la règle
 		xmlChar * attrConfidence = xmlCharStrdup("confidence");
 		char * tmpConfidence = "";
 		tmpConfidence = (char *)(xmlTextReaderGetAttribute(reader, attrConfidence));
 		tmpFloat = (float)(atoi(tmpConfidence));
 		tmpNode.setConfidence(tmpFloat);
 		
-		// specialisation de la rÃ¨gle
+		// specialisation de la règle
 		xmlChar * attrSpecializable = xmlCharStrdup("specializable");
 		char * tmpSpecializable = "";
 		tmpSpecializable = (char *)(xmlTextReaderGetAttribute(reader, attrSpecializable));
@@ -586,7 +593,7 @@ void RuleTree::ATraiteRule(int & etat, xmlTextReaderPtr & reader, int & niveau, 
 			tmpBool = true;
 		else 
 			// sinon dans tous les cas c'est faux 
-			// (par dÃ©faut on considÃ¨rera qu'une rÃ¨gle n'est pas spÃ©cialisable)
+			// (par défaut on considèrera qu'une règle n'est pas spécialisable)
 			tmpBool = false;
 		tmpNode.setSpecializable(tmpBool);
 		
@@ -598,21 +605,23 @@ void RuleTree::ATraiteRule(int & etat, xmlTextReaderPtr & reader, int & niveau, 
 			tmpBool = true;
 		else
 			// sinon dans tous les cas c'est faux
-			// (par dÃ©faut on considÃ¨rera qu'un noeud n'est pas traitÃ©)
+			// (par défaut on considèrera qu'un noeud n'est pas traité)
 			tmpBool = false;
 		tmpNode.setProcessed(tmpBool);
 		
 		// initialisation du parent = noeud du sommet de pile actuel
 		Node tmpParent;
 		tmpParent.clear();
-		tmpParent = pile.top();
+		// BUG : il faut verifier que la pile ne soit pas vide
+		if (!pile.empty())
+			tmpParent = pile.top();
 		setParent(tmpNode, tmpParent);
 		addChild(tmpParent, tmpNode);
 		
 		numero++;
 		setLastNumber(numero);
 		
-		// on empile le noeud ainsi initialisÃ©
+		// on empile le noeud ainsi initialisé
 		pile.push(tmpNode);
 		
 		// on change de niveau
@@ -652,7 +661,7 @@ void RuleTree::ATraiteLeftSide(int & etat, xmlTextReaderPtr & reader, int & nive
 	// Si </LeftSide>
 	if ((xmlTextReaderNodeType(reader) == baliseFermante) && (xmlStrcmp(xmlTextReaderName(reader), xmlCharStrdup("LeftSide")) == 0))
 	{
-		// on rÃ©cupÃ¨re le noeud de sommet de pile
+		// on récupère le noeud de sommet de pile
 		Node tmpNode = pile.top();
 		pile.pop();
 		// on initialise son attribut itemset
@@ -719,7 +728,7 @@ void RuleTree::ATraiteRightSide(int & etat, xmlTextReaderPtr & reader, int & niv
 	if ((xmlTextReaderNodeType(reader) == baliseFermante) && (xmlStrcmp(xmlTextReaderName(reader), xmlCharStrdup("RightSide")) == 0))
 	{
 		// closure = leftside U rightside
-		// on rÃ©cupÃ¨re le noeud du sommet de pile
+		// on récupère le noeud du sommet de pile
 		Node tmpNode = pile.top();
 		pile.pop();
 		SetOfInt tmpSetOfInt;
@@ -758,17 +767,10 @@ void RuleTree::ATraiteRSItem(int & etat, xmlTextReaderPtr & reader, int & niveau
 
 bool RuleTree::load()
 {
-	ifstream fic;
-	fic.open(getName().c_str());
-
-	if (fic != NULL)
-	{
-		// on fait un rewind sur tmpTable pour initialiser le mapping
+	xmlTextReaderPtr reader = xmlNewTextReaderFilename(getName().c_str());
+  if (reader != NULL)
+  {
 		Table tmpTable;
-
-		xmlTextReaderPtr reader = NULL;
-		reader = xmlNewTextReaderFilename(getName().c_str());
-
 		Element tmpElement;
 
 		stack<Node> pile;
@@ -781,7 +783,6 @@ bool RuleTree::load()
 		while ((ret == 1) && (etat != AFin))
 		{
 			ret = xmlTextReaderRead(reader);
-
 			switch (etat)
 			{
 				case ADebut : ATraiteDebut(etat, reader, niveau, pile, nomItem, ensItems, tmpTable); break;
@@ -794,10 +795,6 @@ bool RuleTree::load()
 				case ARSItem : ATraiteRSItem(etat, reader, niveau, pile, nomItem, ensItems, tmpTable); break;
 			}
 		}
-
-		//tmpTable.close();
-		fic.close();
-		
 		return (true);
 	}
 	return (false);
@@ -820,6 +817,8 @@ void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 		fic << " processed=\"yes\"";
 	else
 		fic << " processed=\"no\"";
+	
+	fic << " number=\"" << num << "\"";
 	fic << ">" << endl;
 	
 	// leftSide
@@ -1002,7 +1001,7 @@ void RuleTree::addChild(Node N, Node child)
 	tmpChildren.insert(child.getNumber());
 	setChildren(N, tmpChildren);
 	
-	// et on spÃ©cifie que child a pour parent N
+	// et on spécifie que child a pour parent N
 	setParent(child, N);
 }
 
@@ -1131,7 +1130,7 @@ void RuleTree::remove(Node N)
 
 void RuleTree::specialize(Node N)
 {
-	// si N est spÃ©cializable
+	// si N est spécializable
 	if (N.getSpecializable())
 	{
 		set<int> tmpChildren = getChildren(N);

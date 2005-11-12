@@ -61,6 +61,7 @@ void initArbo(string filename)
 	tmpRuleTree.setTable(filename);
 
 	tmpRuleTree.setOrderSup(ordSup);
+	tmpRuleTree.setOrderInf(ordInf);
 
 	// regles triviales
 	// ---------------------------------------------------------

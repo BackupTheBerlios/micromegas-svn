@@ -11,6 +11,7 @@ MODULES = order/setofint.o \
 	  ruletree/node.o \
 	  ruletree/setofnodes.o \
 	  ruletree/ruletree.o \
+		ruletree/ruletreeTest.o \
 	  navigation/navigation.o
 
 #	order/element.o \
