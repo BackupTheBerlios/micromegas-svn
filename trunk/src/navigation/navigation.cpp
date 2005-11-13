@@ -217,6 +217,14 @@ void initArbo(string filename)
 void specialiser(string filename) {
 }
 
+void specialiser(string input,int node, string output) {
+	RuleTree rt;
+	rt.setName(input);
+	rt.load();
+	rt.specialize(rt.getNodeByNumber(node));
+	rt.save(output);
+}
+
 
 // ===========================================================
 void sauter(string filename) {

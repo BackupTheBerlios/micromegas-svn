@@ -30,6 +30,7 @@ void initArbo(string);
 
 // ===========================================================
 void specialiser(string);
+void specialiser(string,int,string);
 
 
 // ===========================================================

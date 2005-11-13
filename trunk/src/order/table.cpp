@@ -183,11 +183,11 @@ bool Table::rewind()
     cout << "erreur fatale " << endl;
     return (false);
   }
+
   xmlTextReaderRead(reader);
 
   // initialisation du xmlReader
   setXmlReader(reader);
-
   // Utilise readHeader()
   readHeader();
 
@@ -227,10 +227,9 @@ void Table::readHeader()
       xmlChar * attrNbTuples = xmlCharStrdup("nbTuples");
       xmlChar * tmpNbTuples = NULL;
       tmpNbTuples = xmlTextReaderGetAttribute(reader, attrNbTuples);
-
-
       // initialisation des attributs du TDA
       name = (char *)(tmpName);
+      
       nbTuples = atoi((char *)(tmpNbTuples));
       nbItems = atoi((char *)(tmpNbItems));
     }
