@@ -45,4 +45,8 @@ void sauter(char*);
 void specialiser(char*);
 
 
+// ===========================================================
+void makeRuletreeDTD(string);
+
+
 #endif // __NAVIGATION_HPP__

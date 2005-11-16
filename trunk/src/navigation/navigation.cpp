@@ -63,6 +63,9 @@ void initArbo(string filename)
 	tmpRuleTree.setOrderSup(ordSup);
 	tmpRuleTree.setOrderInf(ordInf);
 
+    // ecrit aussi la DTD
+    makeRuletreeDTD(filename);
+
 	// regles triviales
 	// ---------------------------------------------------------
 	set<Element> tmpColl, tmpImPred;
@@ -248,4 +251,38 @@ void specialiser(char* filename) {
 void sauter(char* filename) {
     string name(filename);
     sauter(name);
+}
+
+
+// ===========================================================
+// Cree la DTD "ruletree.dtd" dans le dossier du fichier "filename".
+void makeRuletreeDTD(string filename) {
+    string destdtd = "";
+    if (filename.find_last_of("/") < filename.size()) {
+        destdtd = filename.substr(0, filename.find_last_of("/")) + "/";
+    }
+    destdtd += "ruletree.dtd";
+    cout << destdtd << endl;
+
+    ofstream os(destdtd.c_str());
+
+    os << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" << endl;
+
+    os << "<!ELEMENT RuleTree (Rule+) >" << endl;
+    os << "<!ELEMENT Rule (LeftSide+, Item+, RightSide+, Rule*) >" << endl;
+    os << "<!ELEMENT LeftSide (Item+) >" << endl;
+    os << "<!ELEMENT RightSide (Item+) >" << endl;
+    os << "<!ELEMENT PrincipalItem (#PCDATA) >" << endl;
+    os << "<!ELEMENT Item (#PCDATA) >" << endl;
+
+    os << "<!ATTLIST RuleTree table CDATA #REQUIRED>" << endl;
+    os << "<!ATTLIST RuleTree supOrder CDATA #REQUIRED>" << endl;
+    os << "<!ATTLIST RuleTree infOrder CDATA #REQUIRED>" << endl;
+
+    os << "<!ATTLIST Rule support CDATA #REQUIRED>" << endl;
+    os << "<!ATTLIST Rule confidence CDATA #REQUIRED>" << endl;
+    os << "<!ATTLIST Rule specializable CDATA #REQUIRED>" << endl;
+    os << "<!ATTLIST Rule processed CDATA #REQUIRED>" << endl;
+
+    os.close();
 }
