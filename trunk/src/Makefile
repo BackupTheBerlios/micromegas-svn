@@ -5,7 +5,7 @@
 
 # Compiler configuration
 CXX=g++
-CXXFLAGS=-O2 -Wall -O2
+CXXFLAGS=-O2 -Wall -g
 
 # Includes an libraries
 INC_XML=-I/usr/include/libxml2

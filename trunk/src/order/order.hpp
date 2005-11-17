@@ -39,12 +39,6 @@ class Order
     /** un vecteur indice par des entiers (number d'un element) correspondant a des elements successeurs de l'element indicant l'entree */
     map<int, SetOfElements> imSucc;
 
-    /** le nom du fichier XML contenant la collection */
-    string name;
-    
-    /** le nom du fichier de la table correspondante */
-    string table;
-
   public:
     /**
       * Constructeur par defaut d'un ordre

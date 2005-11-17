@@ -27,7 +27,7 @@ void initArbo(string filename)
 		cout << "Erreur de nom de fichier" <<endl;
 		exit(0);
 	}
-
+	//cout << "generating Sup-irreducible" << endl;
 	/// Calcul de l'odre des sup.
 	SetOfElements soeSup;
 	soeSup.setSup(filename);
@@ -37,19 +37,24 @@ void initArbo(string filename)
 	ordSup.setJ(soeSup);
 	ordSup.save();
 	ordSup.genGraph(name + ".sup.dot");
-
+	
+	//cout << "generating Inf-irreducible" << endl;
 	/// Calcul de l'odre des inf.
 	SetOfElements soeInf;
-	soeInf.setInf(filename);
+	//cout << "\t soe generation" << endl;
+  soeInf.setInf(filename);
 	soeInf.setName(name + ".collection.inf.xml");
 	soeInf.setTable(filename);
 	Order ordInf;
+	//cout << "\t order generation" << endl;
 	ordInf.setJ(soeInf);
+	//cout << "\t saving" << endl;
 	ordInf.save();
 	ordInf.genGraph(name + ".inf.dot");
 
 	/// Initialisation de l'arborescence
 
+	//cout << "initilalizing Ruletree" << endl;
 	RuleTree tmpRuleTree;
 	tmpRuleTree.clear();
 	Node noeudNull;
@@ -60,7 +65,7 @@ void initArbo(string filename)
 	tmpRuleTree.setName(name + ".arbo.xml");
 	tmpRuleTree.setTable(filename);
 
-	tmpRuleTree.setOrderSup(ordSup);
+	tmpRuleTree.setOrderSup(ordSup);	
 	tmpRuleTree.setOrderInf(ordInf);
 
     // ecrit aussi la DTD
@@ -68,6 +73,7 @@ void initArbo(string filename)
 
 	// regles triviales
 	// ---------------------------------------------------------
+	//cout << "Computing trivial rules" << endl;
 	set<Element> tmpColl, tmpImPred;
 	set<Element>::iterator itColl, itImPred;
 	SetOfInt tmpSet;
@@ -100,6 +106,7 @@ void initArbo(string filename)
 		}
 	}
 
+	//cout << "computing general rules" << endl;
 	// regles generales
 	Table tmpTable;
 	tmpTable.clear();
@@ -224,6 +231,7 @@ void specialiser(string input,int node, string output) {
 	RuleTree rt;
 	rt.setName(input);
 	rt.load();
+	rt.getNodeByNumber(node).affiche();
 	rt.specialize(rt.getNodeByNumber(node));
 	rt.save(output);
 }

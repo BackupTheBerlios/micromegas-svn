@@ -47,7 +47,7 @@ RuleTree::RuleTree()
 	table = "";
 	orderSup.clear();
 	orderInf.clear();
-	lastNumber = 0;
+	setLastNumber(0);
 }
 
 
@@ -63,7 +63,7 @@ RuleTree::RuleTree(const RuleTree & init)
 	table = init.table;
 	orderSup = init.orderSup;
 	orderInf = init.orderInf;
-	lastNumber = init.lastNumber;
+	setLastNumber(init.getLastNumber());
 }
 
 
@@ -85,7 +85,7 @@ void RuleTree::clear()
 	table = "";
 	orderSup.clear();
 	orderInf.clear();
-	lastNumber = 0;
+	setLastNumber(0);
 }
 
 
@@ -465,7 +465,7 @@ void RuleTree::ATraiteRuleTree(int & etat, xmlTextReaderPtr & reader, int & nive
 		int numero = getLastNumber();
 
 		// initialisation d'un objet de type Node
-		//tmpNode.setNumber(numero);
+		tmpNode.setNumber(numero);
 		numero++;
 		setLastNumber(numero);
 
@@ -508,13 +508,6 @@ void RuleTree::ATraiteRuleTree(int & etat, xmlTextReaderPtr & reader, int & nive
 			tmpBool = false;
 		tmpNode.setProcessed(tmpBool);
 
-		// numero de la règle
-		xmlChar * attrNumber = xmlCharStrdup("number");
-		char * tmpNumber = "";
-		tmpNumber = (char *)(xmlTextReaderGetAttribute(reader, attrNumber));
-		tmpInt = atoi(tmpNumber);
-		tmpNode.setNumber(tmpInt);
-		
 		// on empile le noeud ainsi initialisé
 		pile.push(tmpNode);
 
@@ -805,6 +798,9 @@ bool RuleTree::load()
 
 void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 {
+	//On sauvegarde les numéro en commençant à 0. En effet, les règles sont ensuite chargées sans tenir compte du numéro, dans cet ordre. L'interface doit cependant pouvoir recuperer le bon numéro.
+	static int cur = 0;
+	
 	Node N = getNodeByNumber(num);
 
 	fic << "<" << baliseRule << " support=\"" << N.getSupport();
@@ -818,7 +814,7 @@ void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 	else
 		fic << " processed=\"no\"";
 	
-	fic << " number=\"" << num << "\"";
+	fic << " number=\"" << cur++	<< "\"";
 	fic << ">" << endl;
 
 	// leftSide
@@ -1343,7 +1339,7 @@ bool RuleTree::jump(Node N)
 			tmpCollBis = (orderSup.imPredIdeal(tmpSetOfElements)).getCollection();
 
 			tmpNode.clear();
-			tmpNode = getNodeByNumber(lastNumber-1);
+			tmpNode = getNodeByNumber(getLastNumber()-1);
 			// pour chaque predecesseurs immediats de orderSup
 			for (itCollBis = tmpCollBis.begin() ; itCollBis != tmpCollBis.end() ; itCollBis++)
 			{
@@ -1510,7 +1506,7 @@ void RuleTree::affiche()
 	orderInf.affiche();
 	cout << endl;
 
-	cout << "lastNumber : " << lastNumber << endl;
+	cout << "lastNumber : " << getLastNumber() << endl;
 	cout << "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ " << endl;
 }
 

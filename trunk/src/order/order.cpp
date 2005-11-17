@@ -16,8 +16,6 @@ Order::Order()
   J.clear();
   imPred.clear();
   imSucc.clear();
-  name = "";
-  table = "";
 }
 
 
@@ -28,8 +26,6 @@ Order::Order(const Order & init)
   J = init.J;
   imPred = init.imPred;
   imSucc = init.imSucc;
-  name = init.name;
-  table = init.table;
 }
 
 
@@ -47,8 +43,6 @@ void Order::clear()
   J.clear();
   imPred.clear();
   imSucc.clear();
-  name = "";
-  table = "";
 }
 
 
@@ -61,9 +55,9 @@ void Order::setJ(SetOfElements init)
   
   set<Element>::iterator itSet;
   set<Element> tmpCollection;
-
-  name = init.getName();
-  table = init.getTable();
+  
+  J.setName(init.getName());
+  J.setTable(init.getTable());
   
   // pour chaque element de ce SetOfElements
   tmpCollection = init.getCollection();
@@ -147,7 +141,7 @@ SetOfElements Order::getImSucc(Element tmp)
 
 void Order::setName(string init)
 {
-  name = init;
+  J.setName(init);
 }
 
 
@@ -155,7 +149,7 @@ void Order::setName(string init)
 
 string Order::getName()
 {
-  return (name);
+  return (J.getName());
 }
 
 
@@ -163,7 +157,7 @@ string Order::getName()
 
 void Order::setTable(string init)
 {
-  table = init;
+  J.setTable(init);
 }
 
 
@@ -171,7 +165,7 @@ void Order::setTable(string init)
 
 string Order::getTable()
 {
-  return (table);
+  return (J.getTable());
 }
 
 
@@ -186,7 +180,7 @@ void Order::load()
   // nom du fichier contenant la collection
   tmpSetOfElements.setName(filename);
   // nom du fichier de la table correspondante
-  tmpSetOfElements.setTable(table);
+  tmpSetOfElements.setTable(getTable());
   // chargement de la collection
   tmpSetOfElements.load();
 
@@ -208,8 +202,6 @@ void Order::load()
 void Order::save()
 {
   // sauvegarder l'ordre revient a sauvegarder la collection
-  J.setName(name);
-  J.setTable(table);
   J.save();
 }
 
@@ -489,8 +481,6 @@ Order Order::duplicate()
   tmpOrder.J = J;
   tmpOrder.imPred = imPred;
   tmpOrder.imSucc = imSucc;
-  tmpOrder.name = name;
-  tmpOrder.table = table;
 
   return (tmpOrder);
 }
@@ -728,7 +718,7 @@ void Order::affiche()
 
 void Order::genGraph(string filename) {
   Table tbl;
-  tbl.setName(table);
+  tbl.setName(getTable());
 	tbl.rewind();
   
   FILE *fp = fopen(filename.c_str(),"wb");

@@ -57,6 +57,7 @@ SetOfElements::~SetOfElements()
 void SetOfElements::setSup(const string & fichier) {
   Table tbl;
   tbl.setName(fichier);
+  table = fichier;
 	tbl.rewind();
   
   for (SetOfInt::iterator it = tbl.getListItems().begin() ;
@@ -81,6 +82,7 @@ void SetOfElements::setInf(const string & fichier) {
   
   for (int nbtuples = 0 ; nbtuples < tbl.getNbTuples() ; ++nbtuples) {
     SetOfInt tuple = tbl.readTuple();
+    //cout << "Tuple en cours : " << nbtuples << endl;
     for(SetOfInt::iterator xi = item.begin(); xi != item.end(); ++xi) {
       
       //cout << *xi << " appartient au tuple ";
@@ -150,6 +152,8 @@ void SetOfElements::setInf(const string & fichier) {
 void SetOfElements::clear()
 {
   collection.clear();
+  name = "";
+  table = "";
 }
 
 
@@ -824,10 +828,13 @@ void SetOfElements::affiche()
 
   // utilise la fonction affiche() du TDA Element
   SoE_iterator itSet;
-
+  Table tbl;
+  tbl.setName(table);
+	tbl.rewind();
+  
   for (itSet = begin() ; itSet != end() ; itSet++)
   {
-    itSet -> affiche();
+    cout << itSet->getNumber() << " = " << tbl.getNameOfSetOfInt(itSet->getItemSet()) << endl;
   }
 }
 
