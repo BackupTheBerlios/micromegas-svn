@@ -17,7 +17,7 @@ class OrderTest : public CppUnit::TestFixture
   CPPUNIT_TEST(testIdeal);
   CPPUNIT_TEST(testFilter);
   CPPUNIT_TEST(testLoadSave);
-  //CPPUNIT_TEST(testImSuccIdeal);
+  CPPUNIT_TEST(testImSuccIdeal);
   //CPPUNIT_TEST(testImPredIdeal);
   //CPPUNIT_TEST(testImPredIdeal2);
   CPPUNIT_TEST_SUITE_END();

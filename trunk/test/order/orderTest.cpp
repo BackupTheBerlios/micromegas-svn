@@ -731,6 +731,8 @@ void OrderTest::testImPredIdeal()
   SetOfElements tmpSOE2;
 
   tmpSOE1.clear();
+  tmpSOE1.setName(nom);
+  tmpSOE1.setTable(nom2);
   
   tmpItem.clear();
   tmpElem.clear();
@@ -746,7 +748,6 @@ void OrderTest::testImPredIdeal()
   tmpSOE1.add(tmpElem);
 
   tmpSOE2.clear();
-  
   
   tmpItem.clear();
   tmpElem.clear();
@@ -772,10 +773,11 @@ void OrderTest::testImPredIdeal()
   
   tmpSOE2.add(tmpElem);
   
-  fixture1->imPredIdeal(tmpSOE2);
-  
   cout<<"TEST"<<endl;
-  fixture1->imPredIdeal(tmpSOE2).affiche();
+  tmpSOE2 = fixture1->imPredIdeal(tmpSOE2);
+  tmpSOE2.setName(nom);
+  tmpSOE2.setTable(nom2);
+  tmpSOE2.affiche();
   cout<<"resultat"<<endl;
   tmpSOE1.affiche();
   cout<<endl<<endl;

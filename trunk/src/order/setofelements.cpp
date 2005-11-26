@@ -127,24 +127,14 @@ void SetOfElements::setInf(const string & fichier) {
   }
 
   // Les fonctions d'unions existantes ne fonctionnent pas. J'en crée une nouvelle.
-  clear();
   set<SetOfInt> cont;
   for(SetOfInt::iterator xi = item.begin();
-      xi != item.end(); ++xi) {
-      //cout << " -----------------------" << endl;
-      //Meet[*xi].affiche();
-      //cout << " -----------------------" << endl;
-    for(SoE_iterator el = Meet[*xi].begin(); el != Meet[*xi].end(); ++el) {
-      cont.insert(el->getItemSet());
-    }
+    xi != item.end(); ++xi) {
+    //cout << getName() + ".collection." + tbl.getNameOfItem(*xi) + ".inf.xml" << endl;
+    Meet[*xi].setName(getName() + ".collection." + tbl.getNameOfItem(*xi) + ".inf.xml");
+    Meet[*xi].setTable(getTable());
+    Meet[*xi].save();
   }
-  int nb = 0;
-  for(set<SetOfInt>::iterator it = cont.begin(); it != cont.end(); ++it) {
-    Element tmp(nb++,*it);
-    //tmp.affiche();
-    add(tmp);
-  }
-  
 }
 
 // ==============================================================
@@ -814,10 +804,39 @@ int SetOfElements::getSize()
   }
 }
 
+// =============================================================
+
+SetOfElements SetOfElements::elementToSetOfElements(Element el) {
+  SetOfElements out;
+  out.setName(getName());
+  out.setTable(getTable());
+  for(set<Element>::iterator it = begin();
+      it != end(); ++it) {
+    //Si l'element du SoE est dans l'element passe en paramètre
+    //it->getItemSet().affiche();
+    //cout << " inclus dans ";
+    //el.getItemSet().affiche();
+    if (el.getItemSet().I_includes(it->getItemSet())) {
+      //cout << "oui" << endl;
+      //On le rajoute au SoE final
+      out.add(*it);
+    }
+  }
+  return out;
+}
+
+// =============================================================
+
+SetOfElements::SoE_iterator SetOfElements::find(const Element & tmp) {
+  for(SoE_iterator it = begin(); it != end(); ++it) {
+    if (it->getItemSet() == tmp.getItemSet()) return it;
+  }
+  return end();
+}
 
 // ==============================================================
 
-void SetOfElements::affiche()
+void SetOfElements::affiche2()
 {
   cout << "nombre d'elements : " << getNbElements() << endl;
 
@@ -835,6 +854,24 @@ void SetOfElements::affiche()
   for (itSet = begin() ; itSet != end() ; itSet++)
   {
     cout << itSet->getNumber() << " = " << tbl.getNameOfSetOfInt(itSet->getItemSet()) << endl;
+  }
+}
+
+void SetOfElements::affiche()
+{
+  cout << "nombre d'elements : " << getNbElements() << endl;
+
+  if (name != "")
+    cout << "nom du fichier XML_COLLECTION : " << name << endl;
+  if (table != "")
+    cout << "nom du fichier XML_TABLE : " << table << endl;
+
+  // utilise la fonction affiche() du TDA Element
+  SoE_iterator itSet;
+
+  for (itSet = begin() ; itSet != end() ; itSet++)
+  {
+    itSet -> affiche();
   }
 }
 

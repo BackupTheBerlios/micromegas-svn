@@ -7,11 +7,11 @@ int main(int argc, char **argv) {
 	bool init=false,spe=false,jmp=false,nd=false,out=false;
 	string input,output;
 	
-	while ((option_char = getopt(argc, argv, "i:s:j:n:o:")) != EOF) {
+	while ((option_char = getopt(argc, argv, "a:s:j:n:o:")) != EOF) {
 		switch(option_char) {
-			case 'i' :
+			case 'a' :
 				if (spe || jmp) {
-					cout << "You can only have one of -s -j or -i" << endl;
+					cout << "You can only have one of -s -j or -a" << endl;
 					return 1;
 				}
 				init = true;
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 				break;
 			case 's' :
 				if (init || jmp) {
-					cout << "You can only have one of -s -j or -i" << endl;
+					cout << "You can only have one of -s -j or -a" << endl;
 					return 1;
 				}
 				spe = true;
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 				break;
 			case 'j' :
 				if (init || spe) {
-					cout << "You can only have one of -s -j or -i" << endl;
+					cout << "You can only have one of -s -j or -a" << endl;
 					return 1;
 				}
 				jmp = true;
@@ -47,4 +47,6 @@ int main(int argc, char **argv) {
 		initArbo(input);
 	else if (spe && nd && out)
 		specialiser(input,node,output);
+	else if (jmp && nd && out)
+		sauter(input,node,output);
 }

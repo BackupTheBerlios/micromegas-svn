@@ -288,7 +288,7 @@ class RuleTree
 		  * @param l'itemset de ce noeud
 		  * @param son pere
 		  */
-		void insert(SetOfInt, Node);
+		int insert(SetOfInt, Node);
 
 		/**
 		  * Fonction qui supprime un noeud de l'arborescence

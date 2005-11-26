@@ -125,6 +125,41 @@ public class ui {
       }
     });
     ope.add(spec);
+    //Ajoute un bouton "sauter"
+    JMenuItem saut = new JMenuItem("Sauter");
+    saut.setMnemonic(KeyEvent.VK_J);
+    saut.setAccelerator(
+      KeyStroke.getKeyStroke(KeyEvent.VK_J, Event.CTRL_MASK));
+    saut.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        TreePath tp = tree.getSelectionPath();
+        try {
+          DefaultMutableTreeNode tn = (DefaultMutableTreeNode)tp.getLastPathComponent();
+          Rule rl = (Rule)tn.getUserObject();
+          if ((rl.getSpecializable().equals("yes"))){
+              System.out.println("./arf -j " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml");
+              Runtime run = Runtime.getRuntime();
+              try {
+              run.exec("./arf -j " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml").waitFor();
+              } catch (Throwable t) { t.printStackTrace(); }
+              filename = "spe.arbo.xml";
+              RTree rt = new RTree(filename);
+              rt.setNode(rl.getLeft(),rl.getRight());
+              model = rt.getModel();
+              model.reload();
+              tree.setModel(model);
+              tree.revalidate();
+              tree.repaint();
+              tree.setSelectionPath(new TreePath(rt.getNode().getPath()));
+              tree.expandPath(new TreePath(rt.getNode().getPath()));
+              }
+          else {
+            textPane.append("You can't jump from this item\n");
+          }
+        } catch(Exception excpt) {}
+      }
+    });
+    ope.add(saut);
   
     //Dessin de la barre de menu
     JMenuBar menuBar = new JMenuBar();

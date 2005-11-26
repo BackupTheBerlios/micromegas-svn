@@ -1034,7 +1034,7 @@ void RuleTree::updateNode(Node N)
 
 // ==============================================================
 
-void RuleTree::insert(SetOfInt E, Node pere)
+int RuleTree::insert(SetOfInt E, Node pere)
 {
 	Node tmpNode;
 	SetOfInt tmp;
@@ -1071,6 +1071,7 @@ void RuleTree::insert(SetOfInt E, Node pere)
 	// mise a jour de lastNumber
 	tmpNum++;
 	setLastNumber(tmpNum);
+	return tmpNum-1;
 }
 
 
@@ -1219,7 +1220,158 @@ void RuleTree::specialize(Node N)
 
 // ==============================================================
 
-bool RuleTree::jump(Node N)
+bool RuleTree::jump(Node N) {
+	bool vrai = true;
+	if ((getParent(N).isNull()) && (N.getSpecializable())) {
+		Table tmpTable;
+		tmpTable.setName(getTable());
+		tmpTable.rewind();
+	
+		// Nom du fichier
+		string name = getName().substr(0,getName().find_first_of("."));
+		// Item principale du noeud
+		string item = tmpTable.getNameOfItem(getItemByNode(N));
+		
+		// le saut est possible
+		set<int> tmpChildren = getChildren(N);
+		set<int>::iterator itChild;
+		Node tmpNode;
+		// on commence par supprimer les fils existants
+		// Pour chaque fils de N
+		for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end() ; itChild++)
+		{
+			tmpNode.clear();
+			tmpNode = listNodes.getNodeByNumber(*itChild);
+			remove(tmpNode);
+		}
+
+		// On recupere les inf correspondant à l'item principal
+		SetOfElements soeInf;
+		soeInf.setName(name + ".collection." + item + ".inf.xml");
+		soeInf.load();
+	
+		//on en aura besoin pour supprimer les doublons
+	  set<SetOfInt> ssoi;
+	
+		//Ici on génère les ImSuccIdeaux de chaque inf. On se base sur l'ordre des sup
+		// en décomposant les inf en sup (elementToSetOfElements).
+		for(SetOfElements::SoE_iterator el = soeInf.begin();
+				el != soeInf.end(); ++el) {
+			SetOfElements id = orderSup.imSuccIdeal(orderSup.getJ().elementToSetOfElements(*el));
+			//On supprime de ces ImSuccIdeaux tout ceux qui contiennent l'element principal
+			// qu'on cherche à impliqué
+			for(set<Element>::iterator it = id.begin();
+				it != id.end(); ++it) {
+				SetOfInt soi = it->getItemSet();
+				if (soi.find(getItemByNode(N)) != soi.end()) {
+					id.remove(*it);
+				}
+			}
+			//On parcours tous les élements restants pour généré leurs prédécesseurs
+			for(SetOfElements::SoE_iterator pr = id.begin();
+				  pr != id.end(); ++ pr) {
+				SetOfElements prec = orderSup.imPredIdeal(orderSup.getJ().elementToSetOfElements(*pr));
+				//Mais on doit supprimer ceux qui sont des infs max (seulement du noeud qu'on traite ?)
+				for(SetOfElements::SoE_iterator tmp = soeInf.begin();
+					  tmp != soeInf.end(); ++tmp) {
+					SetOfElements::SoE_iterator tmpit;
+				  if ((tmpit=prec.find(*tmp)) != prec.end()) {
+						prec.remove(*tmpit);
+					}
+				}
+				// On insere donc que ceux qui ne sont pas des fermés
+				for(SetOfElements::SoE_iterator tmp = prec.begin();
+					  tmp != prec.end(); ++tmp) {
+					ssoi.insert(tmp->getItemSet());
+				}
+			}
+		}
+
+	
+		//On insere tout les elements de ssoi dans le RuleTree
+		for(set<SetOfInt>::iterator ssit = ssoi.begin();
+			  ssit != ssoi.end(); ++ssit) {
+			int num = insert(*ssit,N);
+			SetOfElements tmpImPredIdeal;
+			tmpImPredIdeal = orderSup.imPredIdeal(itemsetToSetOfElements(*ssit));
+			Node tmpPar = getNodeByNumber(num);
+			for (SetOfElements::SoE_iterator tmp = tmpImPredIdeal.begin() ; tmp != tmpImPredIdeal.end() ; tmp++)
+			{
+				int nd = insert(tmp->getItemSet(), tmpPar);
+				
+				SetOfInt rightSide = getNodeByNumber(nd).getClosure().I_minus(listNodes.getNodeByNumber(nd).getSetOfInt());
+				if (rightSide.find(getItemByNode(tmpPar)) != rightSide.end()) {
+					tmpPar.setSpecializable(vrai);
+					}
+				else {
+					remove(getNodeByNumber(nd));
+				}
+			}
+			updateNode(tmpPar);
+		}
+	
+		int nbTuples = tmpTable.getNbTuples();
+		SetOfInt tmpTuple;
+
+		// pour chaque tuple de la table
+		for (int i = 0 ; i < nbTuples ; i++)
+		{
+			tmpTuple = tmpTable.readTuple();
+			listNodes.updateClosureAll(tmpTuple);
+		}
+	
+		set<int> tmp;
+		set<int>::iterator it;
+		bool tmpBool = true,False = false;
+
+		tmpChildren.clear();
+		tmpChildren = getChildren(N);
+
+		// pour chaque fils de N
+		for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end(); itChild++)
+		{
+			Node tmpChild = getNodeByNumber(*itChild);
+
+			tmp = getChildren(tmpChild);
+			// pour chaque fils des fils de N
+			for (it = tmp.begin() ; it != tmp.end() ; it++)
+			{
+				tmpNode.clear();
+				tmpNode = getNodeByNumber(*it);
+				SetOfInt tmpSetOfInt = (tmpNode.getClosure()).I_minus(tmpNode.getSetOfInt());
+				tmpNode.affiche();
+				tmpSetOfInt.affiche();
+				// si l'item appartient a closure \ itemset alors ce fils de N est specializable
+				if (tmpSetOfInt.find(getItemByNode(N)) != tmpSetOfInt.end())
+				{
+					tmpChild.setSpecializable(tmpBool);
+				}
+				else
+				{
+					// sinon on supprime ce noeud
+					remove(tmpNode);
+				}
+			}
+			if (getChildren(tmpChild).size() == 0)
+				tmpChild.setSpecializable(False);
+			tmpChild.setProcessed(tmpBool);
+			updateNode(tmpChild);
+
+			SetOfInt tmpSetOfInt = (tmpChild.getClosure()).I_minus(tmpChild.getSetOfInt());
+			// si l'item n'appartient pas a closure \ itemset
+			if (!(tmpSetOfInt.find(getItemByNode(N)) != tmpSetOfInt.end()))
+			{
+				// alors on supprime ce noeud
+				remove(tmpChild);
+			}
+		}
+	
+		return true;
+	}
+	return false;
+}
+
+/*bool RuleTree::jump(Node N)
 {
 	Node pere;
 	pere = getParent(N);
@@ -1430,7 +1582,7 @@ bool RuleTree::jump(Node N)
 	}
 	else
 		return (false);
-}
+}*/
 
 
 // ==============================================================

@@ -12,6 +12,7 @@
 #include "../order/table.hpp"
 #include "../order/order.hpp"
 #include "../ruletree/ruletree.hpp"
+#include "../order/setofelements.hpp"
 
 // ===========================================================
 // Cas d'utilisation = Initialisation de l'arborescence
@@ -35,6 +36,7 @@ void specialiser(string,int,string);
 
 // ===========================================================
 void sauter(string);
+void sauter(string,int, string);
 
 
 // ===========================================================

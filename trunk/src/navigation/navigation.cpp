@@ -22,7 +22,16 @@
 // ===========================================================
 void initArbo(string filename)
 {
-	string name = filename.substr(0,filename.find_first_of("."));
+	string basepath = filename.substr(0,filename.find_last_of("/"));
+	string basename = filename.substr(filename.find_last_of("/")+1,
+																	  filename.size());
+	string name;
+	//Si le path ne contenait pas de /
+	if (basepath == filename)
+		name = filename.substr(0,filename.find_first_of("."));
+	else
+		name = basepath + "/"
+								+ basename.substr(0,basename.find_first_of("."));
 	if (name.size() == 0) {
 		cout << "Erreur de nom de fichier" <<endl;
 		exit(0);
@@ -42,15 +51,16 @@ void initArbo(string filename)
 	/// Calcul de l'odre des inf.
 	SetOfElements soeInf;
 	//cout << "\t soe generation" << endl;
-  soeInf.setInf(filename);
-	soeInf.setName(name + ".collection.inf.xml");
+	soeInf.setName(name);
 	soeInf.setTable(filename);
-	Order ordInf;
+  soeInf.setInf(filename);
+	//soeInf.setTable(filename);
+	//Order ordInf;
 	//cout << "\t order generation" << endl;
-	ordInf.setJ(soeInf);
+	//ordInf.setJ(soeInf);
 	//cout << "\t saving" << endl;
-	ordInf.save();
-	ordInf.genGraph(name + ".inf.dot");
+	//ordInf.save();
+	//ordInf.genGraph(name + ".inf.dot");
 
 	/// Initialisation de l'arborescence
 
@@ -66,7 +76,7 @@ void initArbo(string filename)
 	tmpRuleTree.setTable(filename);
 
 	tmpRuleTree.setOrderSup(ordSup);	
-	tmpRuleTree.setOrderInf(ordInf);
+	//tmpRuleTree.setOrderInf(ordInf);
 
     // ecrit aussi la DTD
     makeRuletreeDTD(filename);
@@ -106,7 +116,6 @@ void initArbo(string filename)
 		}
 	}
 
-	//cout << "computing general rules" << endl;
 	// regles generales
 	Table tmpTable;
 	tmpTable.clear();
@@ -125,6 +134,7 @@ void initArbo(string filename)
 	SetOfElements tmpImPredIdeal;
 	Node tmpParent;
 	int lastNode;
+
 	for (itColl = tmpColl.begin() ; itColl != tmpColl.end() ; itColl++)
 	{
 		copieOrdre.clear();
@@ -213,7 +223,8 @@ void initArbo(string filename)
 					itListNodes -> setSpecializable(vrai);
 			}
 		}
-		itListNodes -> setProcessed(vrai);
+		if ((tmpRuleTree.getParent(*itListNodes)).isNull())
+			itListNodes -> setProcessed(vrai);
 	}
 
 	tmpListNodes.setCollection(tmpCollListNodes);
@@ -238,7 +249,17 @@ void specialiser(string input,int node, string output) {
 
 
 // ===========================================================
-void sauter(string filename) {
+void sauter(string) {}
+// Prend en paramètre le nom de la table, et le nom de l'item vers
+// laquel sauter
+// Genere un nouveau fichier d'arborescence
+void sauter(string input,int node, string output) {
+	RuleTree rt;
+	rt.setName(input);
+	rt.load();
+	//rt.getNodeByNumber(node).affiche();
+	rt.jump(rt.getNodeByNumber(node));
+	rt.save(output);
 }
 
 
@@ -270,7 +291,7 @@ void makeRuletreeDTD(string filename) {
         destdtd = filename.substr(0, filename.find_last_of("/")) + "/";
     }
     destdtd += "ruletree.dtd";
-    cout << destdtd << endl;
+    //cout << destdtd << endl;
 
     ofstream os(destdtd.c_str());
 

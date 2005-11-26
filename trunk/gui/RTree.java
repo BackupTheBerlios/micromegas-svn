@@ -49,14 +49,16 @@ public class RTree {
                           getSpecializable(curRule),
                           getProcessed(curRule),
                           getNumber(curRule));
-    DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(rul,true);
-    if (rul.getSpecializable().equals("yes") &&
-        rul.getLeft().equals(left) &&
-        rul.getRight().equals(right)) {
-      toNode = dmtn;
+    if (rul.getProcessed().equals("yes")) {
+      DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(rul,true);
+      if (rul.getSpecializable().equals("yes") &&
+          rul.getLeft().equals(left) &&
+          rul.getRight().equals(right)) {
+        toNode = dmtn;
+        }
+      generateModel(curRule,dmtn);
+      mtn.insert(dmtn,i++);
       }
-    generateModel(curRule,dmtn);
-    mtn.insert(dmtn,i++);
     }
   }
 

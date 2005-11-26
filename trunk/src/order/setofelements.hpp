@@ -220,7 +220,14 @@ class SetOfElements
       * @param le nom de la table correspondante
       */
     void closureAll(string);
-
+    
+    
+    /**
+      * Fonction qui decompose les item d'un lement en singleton
+      * et en crée un SetOfElements
+      */
+    SetOfElements elementToSetOfElements(Element el);
+    
     /**
       * Definition d'un iterateur sur le TDA SetOfElements
       */
@@ -230,9 +237,16 @@ class SetOfElements
     SoE_iterator end() {return collection.end();}
 
     /**
+      * Fonction qui retourne un iterateur sur un element si
+      * son itemset correspond a celui passé en paramètres.
+      */ 
+    SoE_iterator find(const Element & tmp);
+  
+    /**
       * Fonction d'affichage d'un objet de type SetOfElements
       */
     void affiche(); 
+    void affiche2(); 
 };
 
 

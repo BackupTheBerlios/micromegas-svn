@@ -619,6 +619,8 @@ SetOfElements Order::imSuccIdeal(SetOfElements I)
     tmpImSucc.add(tmpElement);
   }
 
+  //tmpImSucc.setName(getName());
+  //tmpImSucc.setTable(getTable());
   // on retourne l'ensemble des successeurs immediats
   return (tmpImSucc);
 }
