@@ -41,15 +41,15 @@ public class ui {
     // Ajout d'une zone de texte
     textPane = new JTextArea();
     textPane.setEditable(false);
-    textPane.setRows(10);
-  
+    textPane.setRows(7);
+
     //Listener qui detecte les selections dans l'arbre graphique
     tree.addTreeSelectionListener(new TreeSelectionListener() {
       public void valueChanged(TreeSelectionEvent e) {
         TreePath tp = e.getNewLeadSelectionPath();
         try {
         DefaultMutableTreeNode tn = (DefaultMutableTreeNode)tp.getLastPathComponent();
-        textPane.append(((Rule)tn.getUserObject()).affiche()); }
+        textPane.setText(((Rule)tn.getUserObject()).affiche()); }
         catch(Exception excpt) {}
       }
     });
@@ -68,7 +68,7 @@ public class ui {
             if (result == JFileChooser.CANCEL_OPTION) return;
             try {
               filename = chooser.getName(chooser.getSelectedFile());
-              textPane.append("Ouverture de " + filename + "\n");
+              textPane.setText("Ouverture de " + filename + "\n");
               RTree rt = new RTree(filename);
               model = rt.getModel();
               model.reload();
@@ -76,10 +76,64 @@ public class ui {
               tree.revalidate();
               tree.repaint();
             } catch (Exception err) {
-              textPane.append("Impossible de charger le fichier: " + err + "\n");
+              textPane.setText("Impossible de charger le fichier: " + err + "\n");
             }
           }});
         fichiers.add(ouvrir);
+    JMenuItem touv = new JMenuItem("Convertir une table");
+        touv.setMnemonic(KeyEvent.VK_C);
+        touv.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_C, Event.CTRL_MASK));
+        touv.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.addChoosableFileFilter(new MonFiltreTable());
+            int result = chooser.showOpenDialog(frame);
+            if (result == JFileChooser.CANCEL_OPTION) return;
+            try {
+              filename = chooser.getName(chooser.getSelectedFile());
+              textPane.setText("Initialisation avec " + filename + "\n");
+              Runtime run = Runtime.getRuntime();
+              try {
+                run.exec("./arf -a " + filename).waitFor();
+              } catch (Throwable t) { t.printStackTrace(); }
+              filename = filename.substring(0,filename.lastIndexOf(".table.xml")) + ".arbo.xml";
+              textPane.setText("Ouverture de " + filename + "\n");
+              RTree rt = new RTree(filename);
+              model = rt.getModel();
+              model.reload();
+              tree.setModel(model);
+              tree.revalidate();
+              tree.repaint();
+            } catch (Exception err) {
+              textPane.setText("Conversion impossible: " + filename + ":" + err + "\n");
+            }
+          }});
+        fichiers.add(touv);
+    JMenuItem saveItem = new JMenuItem("Enregistrer");
+        saveItem.setMnemonic(KeyEvent.VK_E);
+        saveItem.setAccelerator(
+          KeyStroke.getKeyStroke(KeyEvent.VK_E, Event.CTRL_MASK));
+        saveItem.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.addChoosableFileFilter(new MonFiltre());
+            int result = chooser.showSaveDialog(frame);
+            if (result == JFileChooser.CANCEL_OPTION) return;
+            try {
+              String nf = chooser.getName(chooser.getSelectedFile());
+              if (!nf.toLowerCase().endsWith(".arbo.xml")) nf += ".arbo.xml";
+              textPane.setText("Enregistrement vers " + nf + "\n");
+              Runtime run = Runtime.getRuntime();
+              try {
+                run.exec("cp " + filename + " " + nf).waitFor();
+              } catch (Throwable t) { t.printStackTrace(); }
+              filename = nf;
+            } catch (Exception err) {
+              textPane.setText("Impossible d'enregistrer le fichier: " + err + "\n");
+            }
+        }});
+        fichiers.add(saveItem);
     JMenuItem quitItem = new JMenuItem("Quitter");
         quitItem.setMnemonic(KeyEvent.VK_Q);
         quitItem.setAccelerator(
@@ -102,7 +156,7 @@ public class ui {
           Rule rl = (Rule)tn.getUserObject();
           if ((rl.getSpecializable().equals("yes"))
            ){
-              System.out.println("./arf -s " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml");
+              //System.out.println("./arf -s " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml");
               Runtime run = Runtime.getRuntime();
               try {
               run.exec("./arf -s " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml").waitFor();
@@ -119,7 +173,7 @@ public class ui {
               tree.expandPath(new TreePath(rt.getNode().getPath()));
               }
           else {
-            textPane.append("This item can't be specialized\n");
+            textPane.setText("This item can't be specialized\n");
           }
         } catch(Exception excpt) {}
       }
@@ -137,7 +191,7 @@ public class ui {
           DefaultMutableTreeNode tn = (DefaultMutableTreeNode)tp.getLastPathComponent();
           Rule rl = (Rule)tn.getUserObject();
           if ((rl.getSpecializable().equals("yes"))){
-              System.out.println("./arf -j " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml");
+              //System.out.println("./arf -j " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml");
               Runtime run = Runtime.getRuntime();
               try {
               run.exec("./arf -j " + filename + " -n " + rl.getNumber() + " -o spe.arbo.xml").waitFor();
@@ -154,7 +208,7 @@ public class ui {
               tree.expandPath(new TreePath(rt.getNode().getPath()));
               }
           else {
-            textPane.append("You can't jump from this item\n");
+            textPane.setText("You can't jump from this item\n");
           }
         } catch(Exception excpt) {}
       }
@@ -182,5 +236,15 @@ class MonFiltre extends javax.swing.filechooser.FileFilter {
   }
   public String getDescription() {
     return "Arborescence XML";
+  }
+}
+
+class MonFiltreTable extends javax.swing.filechooser.FileFilter {
+  public boolean accept(File file) {
+    String filename = file.getName();
+      return filename.endsWith(".table.xml");
+  }
+  public String getDescription() {
+    return "Table XML";
   }
 }

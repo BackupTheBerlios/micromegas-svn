@@ -30,7 +30,7 @@ public class Rule {
                 + "\tSupport : " + sup + "\n"
                 + "\tConfidence : " + conf + "\n"
                 + "\tSpecializable : " + spe + "\n"
-                + "\tProcessed : " + proc + "\n";
+                + "\tProcessed : " + proc;
   }
 
   public String toString() {

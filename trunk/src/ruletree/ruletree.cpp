@@ -1228,7 +1228,8 @@ bool RuleTree::jump(Node N) {
 		tmpTable.rewind();
 	
 		// Nom du fichier
-		string name = getName().substr(0,getName().find_first_of("."));
+		string name = orderSup.getName().substr(0,orderSup.getName().find_first_of("."));
+		cout << name << endl;
 		// Item principale du noeud
 		string item = tmpTable.getNameOfItem(getItemByNode(N));
 		
@@ -1263,27 +1264,9 @@ bool RuleTree::jump(Node N) {
 			for(set<Element>::iterator it = id.begin();
 				it != id.end(); ++it) {
 				SetOfInt soi = it->getItemSet();
-				if (soi.find(getItemByNode(N)) != soi.end()) {
-					id.remove(*it);
-				}
-			}
-			//On parcours tous les élements restants pour généré leurs prédécesseurs
-			for(SetOfElements::SoE_iterator pr = id.begin();
-				  pr != id.end(); ++ pr) {
-				SetOfElements prec = orderSup.imPredIdeal(orderSup.getJ().elementToSetOfElements(*pr));
-				//Mais on doit supprimer ceux qui sont des infs max (seulement du noeud qu'on traite ?)
-				for(SetOfElements::SoE_iterator tmp = soeInf.begin();
-					  tmp != soeInf.end(); ++tmp) {
-					SetOfElements::SoE_iterator tmpit;
-				  if ((tmpit=prec.find(*tmp)) != prec.end()) {
-						prec.remove(*tmpit);
-					}
-				}
-				// On insere donc que ceux qui ne sont pas des fermés
-				for(SetOfElements::SoE_iterator tmp = prec.begin();
-					  tmp != prec.end(); ++tmp) {
-					ssoi.insert(tmp->getItemSet());
-				}
+				if ( (!(soi.find(getItemByNode(N)) != soi.end()))
+					&& (N.getSetOfInt() != soi) )
+					ssoi.insert(soi);
 			}
 		}
 
@@ -1339,8 +1322,8 @@ bool RuleTree::jump(Node N) {
 				tmpNode.clear();
 				tmpNode = getNodeByNumber(*it);
 				SetOfInt tmpSetOfInt = (tmpNode.getClosure()).I_minus(tmpNode.getSetOfInt());
-				tmpNode.affiche();
-				tmpSetOfInt.affiche();
+				//tmpNode.affiche();
+				//tmpSetOfInt.affiche();
 				// si l'item appartient a closure \ itemset alors ce fils de N est specializable
 				if (tmpSetOfInt.find(getItemByNode(N)) != tmpSetOfInt.end())
 				{
