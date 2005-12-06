@@ -30,12 +30,10 @@ void initArbo(string);
 
 
 // ===========================================================
-void specialiser(string);
 void specialiser(string,int,string);
 
 
 // ===========================================================
-void sauter(string);
 void sauter(string,int, string);
 
 
@@ -43,8 +41,8 @@ void sauter(string,int, string);
 // Wrapper des fonctions precedantes avec des parametres
 // compatibles RPC
 void initArbo(char*);
-void sauter(char*);
-void specialiser(char*);
+void sauter(char*, int, char*);
+void specialiser(char*, int, char*);
 
 
 // ===========================================================

@@ -3,7 +3,7 @@
 /* Nom du fichier : ruletree.hpp			*/
 /* Derniere mise a jour : 23/07/2004			*/
 /* Auteur : Noyer Caroline				*/
-/********************************************************/ 
+/********************************************************/
 
 
 #ifndef __RULETREE_HPP__
@@ -44,7 +44,7 @@ class RuleTree
 
 		/** fils d'un noeud */
 		map<int, SetOfInt> children;
-		
+
 		/** nom du fichier XML */
 		string name;
 
@@ -59,7 +59,7 @@ class RuleTree
 
 		/** dernier numero attribue a un noeud */
 		int lastNumber;
-		
+
 		/** ensemble des items (contenus dans la table) */
 		SetOfInt listItems;
 
@@ -89,7 +89,7 @@ class RuleTree
 		  * @param un objet de type map
 		  */
 		void setListNodesItem(map<Node, int>);
-		
+
 		/**
 		  * Fonction qui recupere la liste des noeuds et l'item qu'ils impliquent
 		  */
@@ -100,7 +100,7 @@ class RuleTree
 		  * @param un ensemble de noeuds (SetOfNodes)
 		  */
 		void setListNodes(SetOfNodes);
-		
+
 		/**
 		  * Fonction qui recupere la liste des noeuds
 		  */
@@ -112,7 +112,7 @@ class RuleTree
 		  * @param le pere de ce noeud
 		  */
 		void setParent(Node, Node);
-		
+
 		/**
 		  * Fonction qui recupere le pere d'un noeud
 		  * @param le noeud dont on veut le pere
@@ -125,19 +125,19 @@ class RuleTree
 		  * @param l'ensemble des fils sous forme d'SetOfInt
 		  */
 		void setChildren(Node, SetOfInt);
-		
+
 		/**
 		  * Fonction qui recupere les fils d'un noeud
 		  * @param le noeud dont on veut les fils
 		  */
 		SetOfInt getChildren(Node);
-		
+
 		/**
 		  * Fonction qui initialise l'attribut name
 		  * @param le nom du fichier XML contenant l'arborescence
 		  */
 		void setName(string);
-		
+
 		/**
 		  * Fonction qui recupere le nom du fichier correspondant
 		  */
@@ -148,7 +148,7 @@ class RuleTree
 		  * @param le nom du fichier XML contenant la table correspondante
 		  */
 		void setTable(string);
-		
+
 		/**
 		  * Fonction qui recupere le nom de la table correspondante
 		  */
@@ -159,7 +159,7 @@ class RuleTree
 		  * @param l'ordre avec lequel on initialise
 		  */
 		void setOrderSup(Order);
-		
+
 		/**
 		  * Fonction qui recupere l'ordre des sup-irreductibles
 		  */
@@ -170,7 +170,7 @@ class RuleTree
 		  * @param l'ordre avec lequel on initialise
 		  */
 		void setOrderInf(Order);
-		
+
 		/**
 		  * Fonction qui recupere l'ordre des inf-irreductibles
 		  */
@@ -181,51 +181,51 @@ class RuleTree
 		  * @param le dernier numero attribue
 		  */
 		void setLastNumber(int);
-		
+
 		/**
 		  * Fonction qui recupere le dernier numero attribue
 		  */
 		int getLastNumber() const;
-		
+
 		/**
 		  * Fonction qui initialise l'attribut listItems
 		  * @param l'ensemble de items presents
 		  */
 		void setListItems(SetOfInt);
-		
+
 		/**
 		  * Fonction qui recupere l'ensemble des items
 		  */
 		SetOfInt getListItems() const;
-		
+
 		/**
 		  * Fonction qui initialise l'item implique par un noeud
 		  */
 		void setNodeItem(Node, int);
-		
+
 		/**
 		  * Fonction qui recupere l'item implique par un noeud
 		  * @param le noeud pour lequel on veut l'item
 		  */
 		int getItemByNode(Node);
-		
+
 		/**
 		  * Fonction qui recupere un noeud par son numero
 		  * @param le numero du noeud que l'on veut recuperer
 		  */
 		Node getNodeByNumber(int);
-		
+
 		/**
 		  * Fonction qui retourne l'ensemble des numeros des noeuds presents dans l'arborescence
 		  */
 		SetOfInt getNodesNumbers();
-		
+
 		/**
 		  * Fonction qui convertit un SetOfInt en SetOfElements
 		  * @param l'ensemble que l'on veut convertir
 		  */
 		SetOfElements itemsetToSetOfElements(SetOfInt);
-		
+
 		/**
 		  * Fonction qui convertit un SetOfInt en SetOfNodes
 		  * @param l'ensemble que l'on veut convertir
@@ -260,9 +260,9 @@ class RuleTree
 		  * Fonction qui sauvegarde la structure
 		  * @param le nom du fichier XML
 		  */
-		void saveRule(ofstream &, int, Table);
+		void saveRule(ofstream &, int, Table, int*);
 		void save(string);
-		
+
 		/**
 		  * Fonction qui transforme une regle sous forme de chaine de caracteres en Node
 		  * @param la regle
@@ -276,7 +276,7 @@ class RuleTree
 		  * @param le noeud a�ajouter
 		  */
 		void addChild(Node, Node);
-		
+
 		/**
 		  * Fonction qui met a jour un noeud
 		  * @param le noeud que l'on doit mettre a jour
@@ -307,7 +307,7 @@ class RuleTree
 		  * @param un noeud
 		  */
 		bool jump(Node);
-	
+
 		/**
 		  * Fonction d'affichage d'un objet de type RuleTree
 		  */

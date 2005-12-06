@@ -796,11 +796,11 @@ bool RuleTree::load()
 
 // ==============================================================
 
-void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
+void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable, int* curNum)
 {
 	//On sauvegarde les numéro en commençant à 0. En effet, les règles sont ensuite chargées sans tenir compte du numéro, dans cet ordre. L'interface doit cependant pouvoir recuperer le bon numéro.
-	static int cur = 0;
-	
+	//static int cur = 0;
+
 	Node N = getNodeByNumber(num);
 
 	fic << "<" << baliseRule << " support=\"" << N.getSupport();
@@ -813,8 +813,10 @@ void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 		fic << " processed=\"yes\"";
 	else
 		fic << " processed=\"no\"";
-	
-	fic << " number=\"" << cur++	<< "\"";
+
+	//fic << " number=\"" << cur++	<< "\"";
+    fic << " number=\"" << (*curNum)++	<< "\"";
+
 	fic << ">" << endl;
 
 	// leftSide
@@ -858,7 +860,8 @@ void RuleTree::saveRule(ofstream & fic, int num, Table tmpTable)
 	tmpChildren = getChildren(N);
 	for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end() ; itChild++)
 	{
-		saveRule(fic, *itChild, tmpTable);
+		//saveRule(fic, *itChild, tmpTable);
+        saveRule(fic, *itChild, tmpTable, curNum);
 	}
 
 	fic << "</" << baliseRule << ">" << endl;
@@ -888,6 +891,7 @@ void RuleTree::save(string filename)
  			fic << "<" << baliseRuleTree << " table=\"" << getTable() << "\" supOrder =\"" << orderSup.getName() << "\" infOrder=\"" << orderInf.getName() << "\">" << endl;
 
 			// pour chaque noeud racine (cad noeud n'ayant pas de pere)
+            int curNum = 0;
 			Node tmp;
 			set<Node> tmpColl = listNodes.getCollection();
 			set<Node>::iterator itColl;
@@ -896,7 +900,8 @@ void RuleTree::save(string filename)
 				tmp = getParent(*itColl);
 				if (tmp.isNull())
 				{
-					saveRule(fic, itColl -> getNumber(), tmpTable);
+					//saveRule(fic, itColl -> getNumber(), tmpTable);
+                    saveRule(fic, itColl -> getNumber(), tmpTable, &curNum);
 				}
 
 			}
@@ -1226,13 +1231,13 @@ bool RuleTree::jump(Node N) {
 		Table tmpTable;
 		tmpTable.setName(getTable());
 		tmpTable.rewind();
-	
+
 		// Nom du fichier
 		string name = orderSup.getName().substr(0,orderSup.getName().find_first_of("."));
 		cout << name << endl;
 		// Item principale du noeud
 		string item = tmpTable.getNameOfItem(getItemByNode(N));
-		
+
 		// le saut est possible
 		set<int> tmpChildren = getChildren(N);
 		set<int>::iterator itChild;
@@ -1250,10 +1255,10 @@ bool RuleTree::jump(Node N) {
 		SetOfElements soeInf;
 		soeInf.setName(name + ".collection." + item + ".inf.xml");
 		soeInf.load();
-	
+
 		//on en aura besoin pour supprimer les doublons
 	  set<SetOfInt> ssoi;
-	
+
 		//Ici on génère les ImSuccIdeaux de chaque inf. On se base sur l'ordre des sup
 		// en décomposant les inf en sup (elementToSetOfElements).
 		for(SetOfElements::SoE_iterator el = soeInf.begin();
@@ -1270,7 +1275,7 @@ bool RuleTree::jump(Node N) {
 			}
 		}
 
-	
+
 		//On insere tout les elements de ssoi dans le RuleTree
 		for(set<SetOfInt>::iterator ssit = ssoi.begin();
 			  ssit != ssoi.end(); ++ssit) {
@@ -1281,7 +1286,7 @@ bool RuleTree::jump(Node N) {
 			for (SetOfElements::SoE_iterator tmp = tmpImPredIdeal.begin() ; tmp != tmpImPredIdeal.end() ; tmp++)
 			{
 				int nd = insert(tmp->getItemSet(), tmpPar);
-				
+
 				SetOfInt rightSide = getNodeByNumber(nd).getClosure().I_minus(listNodes.getNodeByNumber(nd).getSetOfInt());
 				if (rightSide.find(getItemByNode(tmpPar)) != rightSide.end()) {
 					tmpPar.setSpecializable(vrai);
@@ -1292,7 +1297,7 @@ bool RuleTree::jump(Node N) {
 			}
 			updateNode(tmpPar);
 		}
-	
+
 		int nbTuples = tmpTable.getNbTuples();
 		SetOfInt tmpTuple;
 
@@ -1302,7 +1307,7 @@ bool RuleTree::jump(Node N) {
 			tmpTuple = tmpTable.readTuple();
 			listNodes.updateClosureAll(tmpTuple);
 		}
-	
+
 		set<int> tmp;
 		set<int>::iterator it;
 		bool tmpBool = true,False = false;
@@ -1348,7 +1353,7 @@ bool RuleTree::jump(Node N) {
 				remove(tmpChild);
 			}
 		}
-	
+
 		return true;
 	}
 	return false;

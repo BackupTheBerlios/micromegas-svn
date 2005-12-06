@@ -46,7 +46,7 @@ void initArbo(string filename)
 	ordSup.setJ(soeSup);
 	ordSup.save();
 	ordSup.genGraph(name + ".sup.dot");
-	
+
 	//cout << "generating Inf-irreducible" << endl;
 	/// Calcul de l'odre des inf.
 	SetOfElements soeInf;
@@ -75,7 +75,7 @@ void initArbo(string filename)
 	tmpRuleTree.setName(name + ".arbo.xml");
 	tmpRuleTree.setTable(filename);
 
-	tmpRuleTree.setOrderSup(ordSup);	
+	tmpRuleTree.setOrderSup(ordSup);
 	//tmpRuleTree.setOrderInf(ordInf);
 
     // ecrit aussi la DTD
@@ -235,9 +235,6 @@ void initArbo(string filename)
 
 
 // ===========================================================
-void specialiser(string filename) {
-}
-
 void specialiser(string input,int node, string output) {
 	RuleTree rt;
 	rt.setName(input);
@@ -249,7 +246,6 @@ void specialiser(string input,int node, string output) {
 
 
 // ===========================================================
-void sauter(string) {}
 // Prend en paramètre le nom de la table, et le nom de l'item vers
 // laquel sauter
 // Genere un nouveau fichier d'arborescence
@@ -272,15 +268,18 @@ void initArbo(char* filename) {
     initArbo(name);
 }
 
-void specialiser(char* filename) {
-    string name(filename);
-    specialiser(name);
+void specialiser(char* filename, int node, char* outname) {
+    string s_filename(filename);
+    string s_output(outname);
+    specialiser(s_filename, node, s_output);
 }
 
-void sauter(char* filename) {
-    string name(filename);
-    sauter(name);
+void sauter(char* filename, int node, char* outname) {
+    string s_filename(filename);
+    string s_output(outname);
+    sauter(s_filename, node, s_output);
 }
+
 
 
 // ===========================================================
