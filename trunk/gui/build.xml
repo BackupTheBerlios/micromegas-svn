@@ -1,0 +1,32 @@
+<project name="gui" default="compile" basedir=".">
+
+    <target name="compile" depends="initbuild">
+        <javac srcdir="." destdir="build" classpath="jdom.jar" />
+    </target>
+    
+    <target name="initbuild">
+        <mkdir dir="build" />
+    </target>
+    
+    <target name="initdist">
+        <mkdir dir="dist" />
+    </target>
+    
+    <target name="dist" depends="compile,initdist">
+        <!--<copy file="MANIFEST.MF" todir="build" />-->
+        <jar destfile="dist/gui.jar" basedir="build" manifest="MANIFEST.MF" />
+        <copy file="jdom.jar" todir="dist" />
+        <exec executable="cp">
+            <arg line="gui.sh dist/gui.sh" />
+        </exec>
+    </target>
+    
+    <target name="clean">
+        <delete dir="build" />
+    </target>
+    
+    <target name="mrproper" depends="clean">
+        <delete dir="dist" />
+    </target>
+    
+</project>
