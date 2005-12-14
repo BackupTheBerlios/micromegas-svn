@@ -22,7 +22,7 @@ public class ui {
 
   static public void display() {
     //Dessine l'interface
-    final JFrame frame = new JFrame("ARF v0.3");
+    final JFrame frame = new JFrame("ARF v1.0");
     
     
     if (filename.equals("")) {
@@ -110,7 +110,7 @@ public class ui {
             }
           }});
         fichiers.add(touv);
-    JMenuItem saveItem = new JMenuItem("Enregistrer");
+    JMenuItem saveItem = new JMenuItem("Enregistrer sous...");
         saveItem.setMnemonic(KeyEvent.VK_E);
         saveItem.setAccelerator(
           KeyStroke.getKeyStroke(KeyEvent.VK_E, Event.CTRL_MASK));

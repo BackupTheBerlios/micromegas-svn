@@ -1274,6 +1274,42 @@ bool RuleTree::jump(Node N) {
 					ssoi.insert(soi);
 			}
 		}
+	
+	/*
+	//Ici on génère les ImSuccIdeaux de chaque inf. On se base sur l'ordre des sup
+// en décomposant les inf en sup (elementToSetOfElements).
+for(SetOfElements::SoE_iterator el = soeInf.begin();
+                                el != soeInf.end(); ++el) {
+                        SetOfElements id = orderSup.imSuccIdeal(orderSup.getJ().elementToSetOfElements(*el));
+                        //On supprime de ces ImSuccIdeaux tout ceux qui contiennent l'element principal
+// qu'on cherche à impliqué
+for(set<Element>::iterator it = id.begin();
+                                it != id.end(); ++it) {
+                                SetOfInt soi = it->getItemSet();
+                                if (soi.find(getItemByNode(N)) != soi.end()) {
+                                        id.remove(*it);
+                                }
+                        }
+                        //On parcours tous les élements restants pour généré leurs prédécesseurs
+for(SetOfElements::SoE_iterator pr = id.begin();
+                                  pr != id.end(); ++ pr) {
+                                SetOfElements prec = orderSup.imPredIdeal(orderSup.getJ().elementToSetOfElements(*pr));
+                                //Mais on doit supprimer ceux qui sont des infs max (seulement du noeud qu'on traite ?)
+for(SetOfElements::SoE_iterator tmp = soeInf.begin();
+                                          tmp != soeInf.end(); ++tmp) {
+                                        SetOfElements::SoE_iterator tmpit;
+                                  if ((tmpit=prec.find(*tmp)) != prec.end()) {
+                                                prec.remove(*tmpit);
+                                        }
+                                }
+                                // On insere donc que ceux qui ne sont pas des fermés
+for(SetOfElements::SoE_iterator tmp = prec.begin();
+                                          tmp != prec.end(); ++tmp) {
+                                        ssoi.insert(tmp->getItemSet());
+                                }
+                        }
+                }
+	*/
 
 
 		//On insere tout les elements de ssoi dans le RuleTree
@@ -1358,219 +1394,6 @@ bool RuleTree::jump(Node N) {
 	}
 	return false;
 }
-
-/*bool RuleTree::jump(Node N)
-{
-	Node pere;
-	pere = getParent(N);
-
-	if ((pere.isNull()) && (N.getSpecializable()))
-	{
-		// le saut est possible
-		set<int> tmpChildren = getChildren(N);
-		set<int>::iterator itChild;
-		Node tmpNode;
-		// on commence par supprimer les fils existants
-		// Pour chaque fils de N
-		for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end() ; itChild++)
-		{
-			tmpNode.clear();
-			tmpNode = listNodes.getNodeByNumber(*itChild);
-			remove(tmpNode);
-		}
-
-		// calcul des infs maximaux
-		Order O2;
-		O2.clear();
-		O2 = orderInf.duplicate();
-		set<Element> tmpColl;
-		set<Element>::iterator itColl;
-		SetOfInt ens1, ens2;
-		ens1 = N.getSetOfInt();
-
-		tmpColl = (O2.getJ()).getCollection();
-		// pour chaque element de la collection de O2
-		for (itColl = tmpColl.begin() ; itColl != tmpColl.end() ; itColl++)
-		{
-			ens2 = itColl -> getItemSet();
-			if (!(ens1.I_includes(ens2)))
-			{
-				O2.remove(*itColl);
-			}
-		}
-
-		// parcours des maximaux
-		SetOfElements maxIdeaux, tmpMax, tmpSoE;
-		SetOfInt tmpSetOfInt;
-		Element tmpElement;
-		SetOfElements tmpSetOfElements;
-		set<Element> tmp1;
-		SetOfElements tmp2;
-		set<Element>::iterator itTmp1, itTmp2, itTmp;
-		SetOfInt tmpSet;
-		int tmpInt;
-
-		maxIdeaux.clear();
-		tmpColl.clear();
-		tmpColl = (O2.max()).getCollection();
-		// pour chaque element des max de O2
-		for (itColl = tmpColl.begin() ; itColl != tmpColl.end() ; itColl++)
-		{
-			tmpMax.clear();
-			tmpSetOfElements.clear();
-			tmpSetOfInt.clear();
-			tmpSetOfInt = itColl -> getItemSet();
-			tmpSetOfElements = itemsetToSetOfElements(tmpSetOfInt);
-
-			// mais on doit avoir un SetOfElements complet ! => on le reforme
-			tmp1.clear();
-			tmp1 = tmpSetOfElements.getCollection();
-			tmp2.clear();
-			tmp2 = orderSup.getJ();
-			for (itTmp1 = tmp1.begin() ; itTmp1 != tmp1.end() ; itTmp1++)
-			{
-				tmpSet.clear();
-				tmpInt = itTmp1 -> getNumber();
-				tmpSet = tmp2.getSetByNumber(tmpInt);
-				itTmp1 -> setItemSet(tmpSet);
-			}
-			tmpSetOfElements.setCollection(tmp1);
-
-			tmpSoE.clear();
-			tmpSoE = orderSup.imSuccIdeal(tmpSetOfElements);
-			tmpMax = maxIdeaux.unionSets(tmpSoE);
-			maxIdeaux = tmpMax;
-		}
-
-		// insertion des maxIdeaux et de leurs predecesseurs dans l'arbo
-		set<Element> tmpCollBis;
-		set<Element>::iterator itCollBis;
-		tmpColl.clear();
-		tmpColl = maxIdeaux.getCollection();
-		Node tmpChild;
-
-		int item = getItemByNode(N);
-
-		for (itColl = tmpColl.begin() ; itColl != tmpColl.end() ; itColl++)
-		{
-			insert(itColl -> getItemSet(), N);
-			tmpSetOfElements.clear();
-			tmpSetOfInt.clear();
-			tmpSetOfInt = itColl -> getItemSet();
-			tmpSetOfElements = itemsetToSetOfElements(tmpSetOfInt);
-
-			// mais on doit avoir un SetOfElements complet ! => on le reforme
-			tmp1.clear();
-			tmp1 = tmpSetOfElements.getCollection();
-			tmp2.clear();
-			tmp2 = orderSup.getJ();
-			for (itTmp1 = tmp1.begin() ; itTmp1 != tmp1.end() ; itTmp1++)
-			{
-				tmpSet.clear();
-				tmpInt = itTmp1 -> getNumber();
-				tmpSet = tmp2.getSetByNumber(tmpInt);
-				itTmp1 -> setItemSet(tmpSet);
-			}
-			tmpSetOfElements.setCollection(tmp1);
-
-			Node test;
-			test.clear();
-			tmpCollBis.clear();
-			tmpCollBis = (orderSup.imPredIdeal(tmpSetOfElements)).getCollection();
-
-			tmpNode.clear();
-			tmpNode = getNodeByNumber(getLastNumber()-1);
-			// pour chaque predecesseurs immediats de orderSup
-			for (itCollBis = tmpCollBis.begin() ; itCollBis != tmpCollBis.end() ; itCollBis++)
-			{
-				if (!(tmpNode.isNull()))
-					insert(itCollBis -> getItemSet(), tmpNode);
-			}
-		}
-
-		// calcul des fermes
-		Table tmpTable;
-		tmpTable.setName(table);
-		tmpTable.rewind();
-		int nbTuples = tmpTable.getNbTuples();
-		SetOfInt tmpTuple;
-		SetOfNodes tmpSetOfNodes;
-
-		// pour chaque tuple de la table
-		for (int i = 0 ; i < nbTuples ; i++)
-		{
-			tmpTuple = tmpTable.readTuple();
-
-// 			// pour chaque fils de N
-// 			for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end(); itChild++)
-// 			{
-// 				tmpNode.clear();
-// 				tmpNode = getNodeByNumber(*itChild);
-// 				tmpSetOfInt.clear();
-// 				tmpSetOfInt = getChildren(tmpNode);
-// 				tmpSetOfNodes.clear();
-// 				tmpSetOfNodes = itemsetToSetOfNodes(tmpSetOfInt);
-// 				// on met a jour le ferme
-// 				tmpSetOfNodes.updateClosureAll(tmpTuple);
-// 			}
-// 			tmpSetOfNodes.clear();
-// 			tmpSetOfNodes = itemsetToSetOfNodes(getChildren(N));
-// 			// on met a jour le ferme de N
-// 			tmpSetOfNodes.updateClosureAll(tmpTuple);
-			listNodes.updateClosureAll(tmpTuple);
-		}
-
-		//tmpTable.close();
-
-		set<int> tmp;
-		set<int>::iterator it;
-		bool tmpBool = true;
-
-		tmpChildren.clear();
-		tmpChildren = getChildren(N);
-
-		// pour chaque fils de N
-		for (itChild = tmpChildren.begin() ; itChild != tmpChildren.end(); itChild++)
-		{
-			tmpChild.clear();
-			tmpChild = getNodeByNumber(*itChild);
-
-			tmp = getChildren(tmpChild);
-			// pour chaque fils des fils de N
-			for (it = tmp.begin() ; it != tmp.end() ; it++)
-			{
-				tmpNode.clear();
-				tmpNode = getNodeByNumber(*it);
-				tmpSetOfInt.clear();
-				tmpSetOfInt = (tmpNode.getClosure()).I_minus(tmpNode.getSetOfInt());
-				// si l'item appartient a closure \ itemset alors ce fils de N est specializable
-				if (tmpSetOfInt.find(item) != tmpSetOfInt.begin())
-				{
-					tmpChild.setSpecializable(tmpBool);
-				}
-				else
-				{
-					// sinon on supprime ce noeud
-					remove(tmpNode);
-				}
-			}
-			tmpChild.setProcessed(tmpBool);
-			updateNode(tmpChild);
-
-			tmpSetOfInt.clear();
-			tmpSetOfInt = (tmpChild.getClosure()).I_minus(tmpChild.getSetOfInt());
-			// si l'item n'appartient pas a closure \ itemset
-			if (!(tmpSetOfInt.find(item) != tmpSetOfInt.end()))
-			{
-				// alors on supprime ce noeud
-				remove(tmpChild);
-			}
-		}
-		return (true);
-	}
-	else
-		return (false);
-}*/
 
 
 // ==============================================================
